@@ -1,0 +1,87 @@
+{
+    "channels": [
+        "paid", 
+        "owned", 
+        "earned", 
+        "affiliate", 
+        "offline"
+    ],
+    "channel_source_medium_mapping": {
+        "paid": {
+            "sources": [
+                "google", 
+                "facebook", 
+                "linkedin", 
+                "twitter", 
+                "bing"
+            ],
+            "mediums": [
+                "cpc", 
+                "cpm", 
+                "display", 
+                "video"
+            ]
+        },
+        "owned": {
+            "sources": [
+                "website", 
+                "newsletter", 
+                "email", 
+                "blog"
+            ],
+            "mediums": [
+                "email", 
+                "referral", 
+                "organic"
+            ]
+        },
+        "earned": {
+            "sources": [
+                "press", 
+                "media", 
+                "blog", 
+                "review"
+            ],
+            "mediums": [
+                "organic", 
+                "referral", 
+                "social"
+            ]
+        },
+        "affiliate": {
+            "sources": [
+                "partner", 
+                "affiliate"
+            ],
+            "mediums": [
+                "affiliate", 
+                "referral"
+            ]
+        },
+        "offline": {
+            "sources": [
+                "print", 
+                "tv", 
+                "radio", 
+                "event"
+            ],
+            "mediums": [
+                "qr", 
+                "direct", 
+                "promo"
+            ]
+        }
+    },
+    "markets": [
+        "medica", 
+        "education", 
+        "lifestyle", 
+        "business"
+    ],
+    "stages": [
+        "awareness", 
+        "consideration", 
+        "conversion", 
+        "loyalty"
+    ]
+}
