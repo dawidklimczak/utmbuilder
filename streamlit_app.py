@@ -69,6 +69,28 @@ st.markdown("""
 # Domyślna konfiguracja parametrów UTM
 DEFAULT_CONFIG = {
     "channels": ["paid", "owned", "earned", "affiliate", "offline"],
+    "channel_source_medium_mapping": {
+        "paid": {
+            "sources": ["google", "facebook", "linkedin", "twitter", "bing"],
+            "mediums": ["cpc", "cpm", "display", "video"]
+        },
+        "owned": {
+            "sources": ["website", "newsletter", "email", "blog"],
+            "mediums": ["email", "referral", "organic"]
+        },
+        "earned": {
+            "sources": ["press", "media", "blog", "review"],
+            "mediums": ["organic", "referral", "social"]
+        },
+        "affiliate": {
+            "sources": ["partner", "affiliate"],
+            "mediums": ["affiliate", "referral"]
+        },
+        "offline": {
+            "sources": ["print", "tv", "radio", "event"],
+            "mediums": ["qr", "direct", "promo"]
+        }
+    },
     "markets": ["medica", "education", "lifestyle", "finance", "technology"],
     "stages": ["reach", "engage", "consider", "convert", "retain", "upsell", "advocate"],
     "goals": ["sales", "traffic", "leads"]
@@ -83,8 +105,23 @@ if CONFIG_KEY not in st.session_state:
 
 # Funkcja do ładowania konfiguracji
 def load_config():
-    # W wersji cloud używamy session_state zamiast pliku
-    config = st.session_state.get(CONFIG_KEY, DEFAULT_CONFIG.copy())
+    # Najpierw próbujemy załadować z pliku JSON (jeśli istnieje)
+    config_path = "utm_config.json"
+    
+    # Próbujemy wczytać z pliku
+    file_config = None
+    if os.path.exists(config_path):
+        try:
+            with open(config_path, "r", encoding="utf-8") as f:
+                file_config = json.load(f)
+        except Exception as e:
+            st.warning(f"Błąd ładowania konfiguracji z pliku: {e}")
+    
+    # Używamy konfiguracji z pliku lub domyślnej
+    if file_config:
+        config = file_config
+    else:
+        config = st.session_state.get(CONFIG_KEY, DEFAULT_CONFIG.copy())
     
     # Sprawdzamy czy wszystkie klucze istnieją i dodajemy brakujące
     for key, value in DEFAULT_CONFIG.items():
@@ -93,6 +130,19 @@ def load_config():
     
     st.session_state[CONFIG_KEY] = config
     return config
+
+# Funkcje do obsługi dynamicznych sugestii na podstawie wybranego channel
+def get_sources_for_channel(channel, config):
+    if not channel or "channel_source_medium_mapping" not in config:
+        return []
+    
+    return config["channel_source_medium_mapping"].get(channel, {}).get("sources", [])
+
+def get_mediums_for_channel(channel, config):
+    if not channel or "channel_source_medium_mapping" not in config:
+        return []
+    
+    return config["channel_source_medium_mapping"].get(channel, {}).get("mediums", [])
 
 # Funkcja do zapisywania konfiguracji
 def save_config(config):
@@ -176,6 +226,12 @@ with st.form("utm_form"):
         
         # Source (źródło)
         st.markdown('<span class="required">*</span> utm_source (platforma/dostawca):', unsafe_allow_html=True)
+        
+        # Pobierz sugestie dla wybranego kanału
+        source_suggestions = get_sources_for_channel(utm_channel, config)
+        if source_suggestions:
+            st.markdown(f'*Sugestie dla {utm_channel}:* {", ".join(source_suggestions)}', unsafe_allow_html=True)
+        
         utm_source = st.text_input(
             "",
             "",
@@ -187,6 +243,12 @@ with st.form("utm_form"):
         
         # Medium (medium)
         st.markdown('<span class="required">*</span> utm_medium (taktyka/typ ruchu):', unsafe_allow_html=True)
+        
+        # Pobierz sugestie dla wybranego kanału
+        medium_suggestions = get_mediums_for_channel(utm_channel, config)
+        if medium_suggestions:
+            st.markdown(f'*Sugestie dla {utm_channel}:* {", ".join(medium_suggestions)}', unsafe_allow_html=True)
+        
         utm_medium = st.text_input(
             "",
             "",
