@@ -361,54 +361,24 @@ with st.form("utm_form"):
         st.markdown('**utm_source (platforma/dostawca)** *', unsafe_allow_html=True)
         
         source_suggestions = get_sources_for_channel(utm_channel, config)
-        source_options = source_suggestions + ["Własna wartość..."]
         
-        utm_source_choice = st.selectbox(
+        utm_source = st.selectbox(
             "",
-            options=[""] + source_options,
-            key="utm_source_choice",
+            options=[""] + source_suggestions,
+            key="utm_source",
             label_visibility="collapsed"
         )
-        
-        # Pole tekstowe zawsze widoczne, ale enabled/disabled w zależności od wyboru
-        utm_source_custom = st.text_input(
-            "Wprowadź własną wartość:", 
-            key="utm_source_custom", 
-            placeholder="np. custom_source",
-            disabled=(utm_source_choice != "Własna wartość...")
-        )
-        
-        # Ustal finalną wartość utm_source
-        if utm_source_choice == "Własna wartość...":
-            utm_source = utm_source_custom
-        else:
-            utm_source = utm_source_choice if utm_source_choice else ""
         
         st.markdown('**utm_medium (taktyka/typ ruchu)** *', unsafe_allow_html=True)
         
         medium_suggestions = get_mediums_for_channel(utm_channel, config)
-        medium_options = medium_suggestions + ["Własna wartość..."]
         
-        utm_medium_choice = st.selectbox(
+        utm_medium = st.selectbox(
             "",
-            options=[""] + medium_options,
-            key="utm_medium_choice",
+            options=[""] + medium_suggestions,
+            key="utm_medium",
             label_visibility="collapsed"
         )
-        
-        # Pole tekstowe zawsze widoczne, ale enabled/disabled w zależności od wyboru
-        utm_medium_custom = st.text_input(
-            "Wprowadź własną wartość:", 
-            key="utm_medium_custom", 
-            placeholder="np. custom_medium",
-            disabled=(utm_medium_choice != "Własna wartość...")
-        )
-        
-        # Ustal finalną wartość utm_medium
-        if utm_medium_choice == "Własna wartość...":
-            utm_medium = utm_medium_custom
-        else:
-            utm_medium = utm_medium_choice if utm_medium_choice else ""
         
         st.markdown('**utm_id (numer akcji)** *', unsafe_allow_html=True)
         utm_id = st.text_input(
