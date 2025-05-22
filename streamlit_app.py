@@ -12,7 +12,7 @@ st.set_page_config(
 
 # Styl CSS
 st.markdown("""
-<style>
+<style>    
     /* Nagłówki sekcji */
     .section-header {
         font-size: 1.2rem;
@@ -41,38 +41,6 @@ st.markdown("""
         border: 1px solid #374151;
     }
     
-    /* Przycisk do kopiowania */
-    .copy-button {
-        background-color: #3d68ff;
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 0.3rem;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        margin-top: 0.5rem;
-    }
-    
-    .copy-button:hover {
-        background-color: #2a4cd4;
-    }
-    
-    /* Komunikat o skopiowaniu */
-    .copy-success {
-        color: #4ade80;
-        margin-top: 0.5rem;
-        font-weight: bold;
-    }
-    
-    /* Lepsze przyciski formularza */
-    .stButton>button {
-        width: 100%;
-        background-color: #3d68ff;
-        color: white;
-        padding: 0.75rem 1rem;
-        font-weight: 600;
-    }
-    
     /* Oznaczenie wymaganych pól */
     .required {
         color: #ff4b4b;
@@ -86,6 +54,15 @@ st.markdown("""
         color: #9ca3af;
         font-size: 0.9rem;
     }
+    
+    /* Lepsze przyciski formularza */
+    .stButton>button {
+        width: 100%;
+        background-color: #3d68ff;
+        color: white;
+        padding: 0.75rem 1rem;
+        font-weight: 600;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -97,16 +74,29 @@ DEFAULT_CONFIG = {
     "goals": ["sales", "traffic", "leads"]
 }
 
-# Ładowanie konfiguracji z pliku
+# Klucz dla przechowywania konfiguracji w session_state
+CONFIG_KEY = "utm_config"
+
+# Inicjalizacja konfiguracji w session_state z pełną kopią
+if CONFIG_KEY not in st.session_state:
+    st.session_state[CONFIG_KEY] = DEFAULT_CONFIG.copy()
+
+# Funkcja do ładowania konfiguracji
 def load_config():
-    config_path = "utm_config.json"
-    if os.path.exists(config_path):
-        try:
-            with open(config_path, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception as e:
-            st.warning(f"Błąd ładowania konfiguracji: {e}")
-    return DEFAULT_CONFIG
+    # W wersji cloud używamy session_state zamiast pliku
+    config = st.session_state.get(CONFIG_KEY, DEFAULT_CONFIG.copy())
+    
+    # Sprawdzamy czy wszystkie klucze istnieją i dodajemy brakujące
+    for key, value in DEFAULT_CONFIG.items():
+        if key not in config:
+            config[key] = value
+    
+    st.session_state[CONFIG_KEY] = config
+    return config
+
+# Funkcja do zapisywania konfiguracji
+def save_config(config):
+    st.session_state[CONFIG_KEY] = config
 
 # Generowanie linku UTM
 def generate_utm_link(base_url, params):
@@ -134,34 +124,6 @@ def generate_utm_link(base_url, params):
         final_url = base_url + "?" + params_string
     
     return final_url
-
-# Funkcja kopiowania do schowka (JavaScript)
-def copy_to_clipboard(text):
-    # Generujemy unikalny ID dla elementu, który będzie przechowywał wynik
-    result_id = "clipboard_result"
-    
-    # Tworzymy kod JavaScript do kopiowania
-    js_code = f"""
-    <script>
-    function copyToClipboard() {{
-        const text = `{text}`;
-        navigator.clipboard.writeText(text)
-            .then(() => {{
-                document.getElementById('{result_id}').innerHTML = '<div class="copy-success">Link skopiowany do schowka!</div>';
-                setTimeout(() => {{
-                    document.getElementById('{result_id}').innerHTML = '';
-                }}, 3000);
-            }})
-            .catch(err => {{
-                document.getElementById('{result_id}').innerHTML = 'Błąd: ' + err;
-            }});
-    }}
-    </script>
-    
-    <button class="copy-button" onclick="copyToClipboard()">Kopiuj do schowka</button>
-    <div id="{result_id}"></div>
-    """
-    return js_code
 
 # Nagłówek aplikacji
 st.title("UTM Builder")
@@ -196,7 +158,7 @@ with st.form("utm_form"):
         st.markdown('<span class="required">*</span> utm_market (rynek):', unsafe_allow_html=True)
         utm_market = st.selectbox(
             "",
-            options=[""] + config["markets"],
+            options=[""] + config.get("markets", []),
             help="Wybierz rynek docelowy",
             key="utm_market",
             label_visibility="collapsed"
@@ -206,7 +168,7 @@ with st.form("utm_form"):
         st.markdown('<span class="required">*</span> utm_channel (najwyższy poziom):', unsafe_allow_html=True)
         utm_channel = st.selectbox(
             "",
-            options=[""] + config["channels"],
+            options=[""] + config.get("channels", []),
             help="Wybierz najwyższy poziom źródła ruchu",
             key="utm_channel",
             label_visibility="collapsed"
@@ -306,7 +268,7 @@ with st.form("utm_form"):
         st.markdown('utm_goal (cel kampanii):', unsafe_allow_html=True)
         utm_goal = st.selectbox(
             "",
-            options=[""] + config["goals"],
+            options=[""] + config.get("goals", []),
             help="Wybierz cel kampanii",
             key="utm_goal",
             label_visibility="collapsed"
@@ -316,7 +278,7 @@ with st.form("utm_form"):
         st.markdown('utm_stage (etap lejka):', unsafe_allow_html=True)
         utm_stage = st.selectbox(
             "",
-            options=[""] + config["stages"],
+            options=[""] + config.get("stages", []),
             help="Wybierz etap lejka marketingowego",
             key="utm_stage",
             label_visibility="collapsed"
@@ -335,7 +297,7 @@ with st.form("utm_form"):
         
         st.markdown('</div>', unsafe_allow_html=True)
     
-    # Przycisk generowania - to jest kluczowa zmiana
+    # Przycisk generowania - musi być ostatnim elementem w formularzu
     submit = st.form_submit_button("Generuj link UTM")
 
 # Przetwarzanie po kliknięciu przycisku
