@@ -41,6 +41,38 @@ st.markdown("""
         border: 1px solid #374151;
     }
     
+    /* Przycisk do kopiowania */
+    .copy-button {
+        background-color: #3d68ff;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.3rem;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 0.5rem;
+    }
+    
+    .copy-button:hover {
+        background-color: #2a4cd4;
+    }
+    
+    /* Komunikat o skopiowaniu */
+    .copy-success {
+        color: #4ade80;
+        margin-top: 0.5rem;
+        font-weight: bold;
+    }
+    
+    /* Lepsze przyciski formularza */
+    .stButton>button {
+        width: 100%;
+        background-color: #3d68ff;
+        color: white;
+        padding: 0.75rem 1rem;
+        font-weight: 600;
+    }
+    
     /* Oznaczenie wymaganych pól */
     .required {
         color: #ff4b4b;
@@ -54,15 +86,6 @@ st.markdown("""
         color: #9ca3af;
         font-size: 0.9rem;
     }
-    
-    /* Lepsze przyciski formularza */
-    .stButton>button {
-        width: 100%;
-        background-color: #3d68ff;
-        color: white;
-        padding: 0.75rem 1rem;
-        font-weight: 600;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -70,40 +93,75 @@ st.markdown("""
 DEFAULT_CONFIG = {
     "channels": ["paid", "owned", "earned", "affiliate", "offline"],
     "markets": ["medica", "education", "lifestyle", "finance", "technology"],
-    "stages": ["awareness", "consideration", "conversion", "loyalty"]
+    "stages": ["reach", "engage", "consider", "convert", "retain", "upsell", "advocate"],
+    "goals": ["sales", "traffic", "leads"]
 }
 
-# Klucz dla przechowywania konfiguracji w session_state
-CONFIG_KEY = "utm_config"
-
-# Inicjalizacja konfiguracji w session_state
-if CONFIG_KEY not in st.session_state:
-    st.session_state[CONFIG_KEY] = DEFAULT_CONFIG
-
-# Funkcja do ładowania konfiguracji
+# Ładowanie konfiguracji z pliku
 def load_config():
-    # W wersji cloud używamy session_state zamiast pliku
-    return st.session_state[CONFIG_KEY]
-
-# Funkcja do zapisywania konfiguracji
-def save_config(config):
-    st.session_state[CONFIG_KEY] = config
+    config_path = "utm_config.json"
+    if os.path.exists(config_path):
+        try:
+            with open(config_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            st.warning(f"Błąd ładowania konfiguracji: {e}")
+    return DEFAULT_CONFIG
 
 # Generowanie linku UTM
 def generate_utm_link(base_url, params):
+    # Filtrowanie parametrów, które nie są puste
     filtered_params = {k: v for k, v in params.items() if v}
     
     # Dodanie parametru "a" z wartością utm_id
     if "utm_id" in filtered_params:
         filtered_params["a"] = filtered_params["utm_id"]
     
+    # Ręczne kodowanie parametrów dla zachowania ukośników wstecznych
+    encoded_params = []
+    for key, value in filtered_params.items():
+        # Kodowanie URL z zachowaniem ukośników wstecznych
+        encoded_value = urllib.parse.quote(value, safe='')
+        encoded_params.append(f"{key}={encoded_value}")
+    
+    # Łączenie zakodowanych parametrów
+    params_string = "&".join(encoded_params)
+    
     # Tworzenie pełnego URL
     if "?" in base_url:
-        final_url = base_url + "&" + urllib.parse.urlencode(filtered_params)
+        final_url = base_url + "&" + params_string
     else:
-        final_url = base_url + "?" + urllib.parse.urlencode(filtered_params)
+        final_url = base_url + "?" + params_string
     
     return final_url
+
+# Funkcja kopiowania do schowka (JavaScript)
+def copy_to_clipboard(text):
+    # Generujemy unikalny ID dla elementu, który będzie przechowywał wynik
+    result_id = "clipboard_result"
+    
+    # Tworzymy kod JavaScript do kopiowania
+    js_code = f"""
+    <script>
+    function copyToClipboard() {{
+        const text = `{text}`;
+        navigator.clipboard.writeText(text)
+            .then(() => {{
+                document.getElementById('{result_id}').innerHTML = '<div class="copy-success">Link skopiowany do schowka!</div>';
+                setTimeout(() => {{
+                    document.getElementById('{result_id}').innerHTML = '';
+                }}, 3000);
+            }})
+            .catch(err => {{
+                document.getElementById('{result_id}').innerHTML = 'Błąd: ' + err;
+            }});
+    }}
+    </script>
+    
+    <button class="copy-button" onclick="copyToClipboard()">Kopiuj do schowka</button>
+    <div id="{result_id}"></div>
+    """
+    return js_code
 
 # Nagłówek aplikacji
 st.title("UTM Builder")
@@ -244,6 +302,16 @@ with st.form("utm_form"):
             label_visibility="collapsed"
         )
         
+        # Goal (cel kampanii)
+        st.markdown('utm_goal (cel kampanii):', unsafe_allow_html=True)
+        utm_goal = st.selectbox(
+            "",
+            options=[""] + config["goals"],
+            help="Wybierz cel kampanii",
+            key="utm_goal",
+            label_visibility="collapsed"
+        )
+        
         # Stage (etap)
         st.markdown('utm_stage (etap lejka):', unsafe_allow_html=True)
         utm_stage = st.selectbox(
@@ -267,7 +335,7 @@ with st.form("utm_form"):
         
         st.markdown('</div>', unsafe_allow_html=True)
     
-    # Przycisk generowania
+    # Przycisk generowania - to jest kluczowa zmiana
     submit = st.form_submit_button("Generuj link UTM")
 
 # Przetwarzanie po kliknięciu przycisku
@@ -295,6 +363,7 @@ if submit:
             "utm_medium": utm_medium,
             "utm_id": utm_id,
             "utm_campaign": utm_campaign,
+            "utm_goal": utm_goal,
             "utm_stage": utm_stage,
             "utm_cohort": utm_cohort,
             "utm_content": utm_content,
@@ -357,8 +426,18 @@ with st.expander("Informacje o parametrach UTM"):
     #### Kampania
     - **utm_id** - numer akcji
     - **utm_campaign** - nazwa kampanii/inicjatywy (Wg. konwencji: cel_marketingowy-linia_produktowa-segment-rodzaj)
-    - **utm_stage** - etap lejka: awareness, consideration, conversion, loyalty
+    - **utm_goal** - cel kampanii: sales, traffic, leads
+    - **utm_stage** - etap lejka: reach, engage, consider, convert, retain, upsell, advocate
     - **utm_cohort** - kohorta/persona
+    
+    **Etapy lejka marketingowego:**
+    - **reach** - Budowanie świadomości marki (dotarcie do nowych odbiorców)
+    - **engage** - Pierwsze zaangażowanie odbiorcy (wzbudzenie ciekawości)
+    - **consider** - Rozważenie oferty (zachęcenie do zapoznania się z subskrypcją)
+    - **convert** - Zakup lub subskrypcja (przekonanie do podjęcia decyzji zakupowej)
+    - **retain** - Utrzymanie klienta
+    - **upsell** - Zwiększenie wartości klienta (przedłużenie subskrypcji, sprzedaż dodatków)
+    - **advocate** - Rekomendacje od klientów (pozyskanie nowych subskrybentów przez obecnych)
     
     #### Kreacja
     - **utm_content** - wersja kreacji: email_short, banner_900x344_blue, popup_blue
