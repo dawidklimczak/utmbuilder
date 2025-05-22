@@ -10,18 +10,23 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Styl CSS
+# Zaawansowany CSS
 st.markdown("""
 <style>    
-    /* Nagłówki sekcji */
+    /* Ogólne style */
+    .main { padding-top: 1rem; }
+    
+    /* Nagłówki sekcji z ikonami */
     .section-header {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         font-weight: bold;
         margin-top: 1.5rem;
         margin-bottom: 1rem;
         color: #ffffff;
-        padding-bottom: 0.3rem;
-        border-bottom: 1px solid #374151;
+        padding: 0.8rem;
+        background: linear-gradient(90deg, #1e2730 0%, #2a3746 100%);
+        border-radius: 0.5rem;
+        border-left: 4px solid #3d68ff;
     }
 
     /* Pojemniki dla kategorii */
@@ -30,6 +35,19 @@ st.markdown("""
         border-radius: 0.5rem;
         padding: 1.5rem;
         margin-bottom: 1rem;
+        border: 1px solid #374151;
+    }
+    
+    /* Live preview */
+    .live-preview {
+        background-color: #0f1419;
+        border: 2px solid #3d68ff;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin: 1rem 0;
+        font-family: monospace;
+        overflow-wrap: break-word;
+        line-height: 1.6;
     }
     
     /* Pole wynikowe */
@@ -47,31 +65,77 @@ st.markdown("""
         font-weight: bold;
     }
     
-    /* Wyjaśnienie wymaganych pól */
-    .required-explanation {
-        margin-top: 0.5rem;
-        margin-bottom: 1.5rem;
-        color: #9ca3af;
-        font-size: 0.9rem;
+    /* Ostrzeżenia walidacji */
+    .validation-warning {
+        background-color: rgba(255, 193, 7, 0.1);
+        border-left: 4px solid #ffc107;
+        padding: 0.5rem;
+        margin: 0.5rem 0;
+        border-radius: 0.3rem;
     }
     
-    /* Lepsze przyciski formularza */
+    .validation-success {
+        background-color: rgba(40, 167, 69, 0.1);
+        border-left: 4px solid #28a745;
+        padding: 0.5rem;
+        margin: 0.5rem 0;
+        border-radius: 0.3rem;
+    }
+    
+    .validation-info {
+        background-color: rgba(61, 104, 255, 0.1);
+        border-left: 4px solid #3d68ff;
+        padding: 0.5rem;
+        margin: 0.5rem 0;
+        border-radius: 0.3rem;
+    }
+    
+    /* Szablony kampanii */
+    .template-button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        margin: 0.2rem;
+        border-radius: 1rem;
+        border: none;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: transform 0.2s;
+    }
+    
+    .template-button:hover {
+        transform: translateY(-2px);
+    }
+    
+    /* Lepsze przyciski */
     .stButton>button {
         width: 100%;
-        background-color: #3d68ff;
+        background: linear-gradient(135deg, #3d68ff 0%, #5a7cff 100%);
         color: white;
         padding: 0.75rem 1rem;
         font-weight: 600;
+        border-radius: 0.5rem;
+    }
+    
+    /* Required info */
+    .required-explanation {
+        margin-bottom: 1.5rem;
+        color: #9ca3af;
+        font-size: 0.9rem;
+        background-color: #1e2730;
+        padding: 0.8rem;
+        border-radius: 0.5rem;
+        border-left: 4px solid #ff4b4b;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# Domyślna konfiguracja parametrów UTM
+# Domyślna konfiguracja parametrów UTM (backup gdy brak pliku JSON)
 DEFAULT_CONFIG = {
     "channels": ["paid", "owned", "earned", "affiliate", "offline"],
     "channel_source_medium_mapping": {
         "paid": {
-            "sources": ["google", "facebook", "linkedin", "twitter", "bing"],
+            "sources": ["google", "facebook", "linkedin", "twitter", "bing", "youtube"],
             "mediums": ["cpc", "cpm", "display", "video"]
         },
         "owned": {
@@ -93,22 +157,58 @@ DEFAULT_CONFIG = {
     },
     "markets": ["medica", "education", "lifestyle", "finance", "technology"],
     "stages": ["reach", "engage", "consider", "convert", "retain", "upsell", "advocate"],
-    "goals": ["sales", "traffic", "leads"]
+    "goals": ["sales", "traffic", "leads"],
+    "campaign_templates": {
+        "🔍 Google Ads": {
+            "utm_channel": "paid",
+            "utm_source": "google",
+            "utm_medium": "cpc",
+            "description": "Kampania Google Ads - wyszukiwanie płatne"
+        },
+        "📱 Facebook Ads": {
+            "utm_channel": "paid", 
+            "utm_source": "facebook",
+            "utm_medium": "cpc",
+            "description": "Kampania Facebook Ads - reklamy społecznościowe"
+        },
+        "📧 Email Newsletter": {
+            "utm_channel": "owned",
+            "utm_source": "newsletter", 
+            "utm_medium": "email",
+            "description": "Newsletter email - własny kanał komunikacji"
+        }
+    },
+    "validation_rules": {
+        "warnings": [
+            {"channel": "paid", "medium": "organic", "message": "⚠️ Channel 'paid' z medium 'organic' - czy to na pewno poprawne?"}
+        ],
+        "success": [
+            {"channel": "paid", "medium": "cpc", "message": "✅ Świetnie! Klasyczna kombinacja dla paid search"}
+        ],
+        "suggestions": [
+            {"source": "facebook", "message": "💡 Dla Facebook dodaj utm_content z formatem kreacji"}
+        ]
+    },
+    "ui_settings": {
+        "show_live_preview": True,
+        "show_templates": True,
+        "show_validation": True,
+        "default_base_url": "https://example.com"
+    }
 }
 
-# Klucz dla przechowywania konfiguracji w session_state
 CONFIG_KEY = "utm_config"
 
-# Inicjalizacja konfiguracji w session_state z pełną kopią
+# Inicjalizacja
 if CONFIG_KEY not in st.session_state:
     st.session_state[CONFIG_KEY] = DEFAULT_CONFIG.copy()
 
-# Funkcja do ładowania konfiguracji
+if "live_preview_url" not in st.session_state:
+    st.session_state.live_preview_url = ""
+
+# Funkcje pomocnicze
 def load_config():
-    # Najpierw próbujemy załadować z pliku JSON (jeśli istnieje)
     config_path = "utm_config.json"
-    
-    # Próbujemy wczytać z pliku
     file_config = None
     if os.path.exists(config_path):
         try:
@@ -117,13 +217,11 @@ def load_config():
         except Exception as e:
             st.warning(f"Błąd ładowania konfiguracji z pliku: {e}")
     
-    # Używamy konfiguracji z pliku lub domyślnej
     if file_config:
         config = file_config
     else:
         config = st.session_state.get(CONFIG_KEY, DEFAULT_CONFIG.copy())
     
-    # Sprawdzamy czy wszystkie klucze istnieją i dodajemy brakujące
     for key, value in DEFAULT_CONFIG.items():
         if key not in config:
             config[key] = value
@@ -131,43 +229,50 @@ def load_config():
     st.session_state[CONFIG_KEY] = config
     return config
 
-# Funkcje do obsługi dynamicznych sugestii na podstawie wybranego channel
 def get_sources_for_channel(channel, config):
     if not channel or "channel_source_medium_mapping" not in config:
         return []
-    
     return config["channel_source_medium_mapping"].get(channel, {}).get("sources", [])
 
 def get_mediums_for_channel(channel, config):
     if not channel or "channel_source_medium_mapping" not in config:
         return []
-    
     return config["channel_source_medium_mapping"].get(channel, {}).get("mediums", [])
 
-# Funkcja do zapisywania konfiguracji
-def save_config(config):
-    st.session_state[CONFIG_KEY] = config
+def validate_combination(channel, source, medium, config):
+    messages = []
+    validation_rules = config.get("validation_rules", {})
+    
+    # Sprawdź ostrzeżenia
+    for rule in validation_rules.get("warnings", []):
+        if (rule.get("channel") == channel and rule.get("medium") == medium):
+            messages.append(("warning", rule["message"]))
+    
+    # Sprawdź sukces
+    for rule in validation_rules.get("success", []):
+        if (rule.get("channel") == channel and rule.get("medium") == medium):
+            messages.append(("success", rule["message"]))
+    
+    # Sprawdź sugestie
+    for rule in validation_rules.get("suggestions", []):
+        if rule.get("source") == source:
+            messages.append(("info", rule["message"]))
+    
+    return messages
 
-# Generowanie linku UTM
 def generate_utm_link(base_url, params):
-    # Filtrowanie parametrów, które nie są puste
     filtered_params = {k: v for k, v in params.items() if v}
     
-    # Dodanie parametru "a" z wartością utm_id
     if "utm_id" in filtered_params:
         filtered_params["a"] = filtered_params["utm_id"]
     
-    # Ręczne kodowanie parametrów dla zachowania ukośników wstecznych
     encoded_params = []
     for key, value in filtered_params.items():
-        # Kodowanie URL z zachowaniem ukośników wstecznych
         encoded_value = urllib.parse.quote(value, safe='')
         encoded_params.append(f"{key}={encoded_value}")
     
-    # Łączenie zakodowanych parametrów
     params_string = "&".join(encoded_params)
     
-    # Tworzenie pełnego URL
     if "?" in base_url:
         final_url = base_url + "&" + params_string
     else:
@@ -175,196 +280,247 @@ def generate_utm_link(base_url, params):
     
     return final_url
 
+def update_live_preview(base_url, params):
+    if base_url:
+        preview_url = generate_utm_link(base_url, params)
+        st.session_state.live_preview_url = preview_url
+
+def apply_template(template_name, config):
+    campaign_templates = config.get("campaign_templates", {})
+    if template_name in campaign_templates:
+        template = campaign_templates[template_name]
+        for key, value in template.items():
+            if key != "description":
+                st.session_state[key] = value
+
 # Nagłówek aplikacji
-st.title("UTM Builder")
-st.markdown("Narzędzie do generowania linków z parametrami UTM dla kampanii marketingowych.")
-st.markdown('<div class="required-explanation">Pola oznaczone <span class="required">*</span> są wymagane</div>', unsafe_allow_html=True)
+st.title("🚀 UTM Builder Pro")
+st.markdown("**Profesjonalne narzędzie do generowania linków UTM z inteligentną walidacją**")
+
+st.markdown('<div class="required-explanation">📋 Pola oznaczone <span class="required">*</span> są wymagane</div>', unsafe_allow_html=True)
 
 # Ładowanie konfiguracji
 config = load_config()
 
+# Quick Templates - tylko jeśli włączone w konfiguracji
+ui_settings = config.get("ui_settings", {})
+if ui_settings.get("show_templates", True):
+    st.markdown('<div class="section-header">⚡ Szybkie szablony kampanii</div>', unsafe_allow_html=True)
+
+    campaign_templates = config.get("campaign_templates", {})
+    template_cols = st.columns(3)
+    template_names = list(campaign_templates.keys())
+
+    for i, template_name in enumerate(template_names):
+        col_idx = i % 3
+        with template_cols[col_idx]:
+            if st.button(template_name, key=f"template_{i}", help=campaign_templates[template_name].get("description", "")):
+                apply_template(template_name, config)
+                st.success(f"Zastosowano szablon: {template_name}")
+                st.experimental_rerun()
+
+# Live Preview - tylko jeśli włączone w konfiguracji
+if ui_settings.get("show_live_preview", True) and st.session_state.live_preview_url:
+    st.markdown('<div class="section-header">👁️ Podgląd na żywo</div>', unsafe_allow_html=True)
+    
+    # Kolorowanie linku
+    parts = st.session_state.live_preview_url.split("?")
+    base_part = parts[0]
+    
+    if len(parts) > 1:
+        params_text = ""
+        params = parts[1].split("&")
+        for i, param in enumerate(params):
+            if "=" in param:
+                param_name, param_value = param.split("=", 1)
+                params_text += f'<span style="color: #ff9d4f;">{param_name}</span>=<span style="color: #4ade80;">{param_value}</span>'
+            else:
+                params_text += f'<span style="color: #ff9d4f;">{param}</span>'
+            
+            if i < len(params) - 1:
+                params_text += '<span style="color: #ffffff;">&amp;</span>'
+    else:
+        params_text = ""
+    
+    query_part = f'<span style="color: #ffffff;">?</span>{params_text}' if params_text else ""
+    
+    st.markdown(f"""
+    <div class="live-preview">
+        <span style="color: #3d68ff; font-weight: bold;">{base_part}</span>{query_part}
+    </div>
+    """, unsafe_allow_html=True)
+
 # Główny formularz
 with st.form("utm_form"):
-    # Sekcja URL bazowy
-    st.markdown('<div class="section-header">URL bazowy</div>', unsafe_allow_html=True)
-    st.markdown('<span class="required">*</span> URL bazowy strony:', unsafe_allow_html=True)
-    base_url = st.text_input(
-        "",
-        "https://example.com",
-        help="Wprowadź adres strony docelowej",
-        key="base_url",
-        placeholder="https://example.com/strona-docelowa",
-        label_visibility="collapsed"
-    )
+    # 📊 TRACKING (wymagane)
+    st.markdown('<div class="section-header">📊 TRACKING (wymagane)</div>', unsafe_allow_html=True)
     
-    # Dwie kolumny na parametry
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown('<div class="category-container">', unsafe_allow_html=True)
-        st.markdown('<div class="section-header">Źródło ruchu</div>', unsafe_allow_html=True)
+        st.markdown('<span class="required">*</span> **URL bazowy strony:**', unsafe_allow_html=True)
+        base_url = st.text_input(
+            "",
+            st.session_state.get("base_url", ui_settings.get("default_base_url", "https://example.com")),
+            help="Wprowadź adres strony docelowej",
+            key="base_url",
+            placeholder="https://example.com/strona-docelowa",
+            label_visibility="collapsed"
+        )
         
-        # Market (rynek)
-        st.markdown('<span class="required">*</span> utm_market (rynek):', unsafe_allow_html=True)
+        st.markdown('<span class="required">*</span> **utm_market (rynek):**', unsafe_allow_html=True)
         utm_market = st.selectbox(
             "",
             options=[""] + config.get("markets", []),
+            index=0 if not st.session_state.get("utm_market") else config.get("markets", []).index(st.session_state.get("utm_market")) + 1 if st.session_state.get("utm_market") in config.get("markets", []) else 0,
             help="Wybierz rynek docelowy",
             key="utm_market",
             label_visibility="collapsed"
         )
         
-        # Channel (kanał)
-        st.markdown('<span class="required">*</span> utm_channel (najwyższy poziom):', unsafe_allow_html=True)
+        st.markdown('<span class="required">*</span> **utm_channel (najwyższy poziom):**', unsafe_allow_html=True)
         utm_channel = st.selectbox(
             "",
             options=[""] + config.get("channels", []),
+            index=0 if not st.session_state.get("utm_channel") else config.get("channels", []).index(st.session_state.get("utm_channel")) + 1 if st.session_state.get("utm_channel") in config.get("channels", []) else 0,
             help="Wybierz najwyższy poziom źródła ruchu",
             key="utm_channel",
             label_visibility="collapsed"
         )
-        
-        # Source (źródło)
-        st.markdown('<span class="required">*</span> utm_source (platforma/dostawca):', unsafe_allow_html=True)
-        
-        # Pobierz sugestie dla wybranego kanału
-        source_suggestions = get_sources_for_channel(utm_channel, config)
-        if source_suggestions:
-            st.markdown(f'*Sugestie dla {utm_channel}:* {", ".join(source_suggestions)}', unsafe_allow_html=True)
-        
-        utm_source = st.text_input(
-            "",
-            "",
-            help="Wprowadź platformę lub dostawcę",
-            key="utm_source",
-            placeholder="np. google, facebook, salesmanago",
-            label_visibility="collapsed"
-        )
-        
-        # Medium (medium)
-        st.markdown('<span class="required">*</span> utm_medium (taktyka/typ ruchu):', unsafe_allow_html=True)
-        
-        # Pobierz sugestie dla wybranego kanału
-        medium_suggestions = get_mediums_for_channel(utm_channel, config)
-        if medium_suggestions:
-            st.markdown(f'*Sugestie dla {utm_channel}:* {", ".join(medium_suggestions)}', unsafe_allow_html=True)
-        
-        utm_medium = st.text_input(
-            "",
-            "",
-            help="Wprowadź taktykę lub typ ruchu",
-            key="utm_medium",
-            placeholder="np. cpc, cpm, organic",
-            label_visibility="collapsed"
-        )
-        
-        st.markdown('</div>', unsafe_allow_html=True)
-        
-        # Sekcja Kreacja
-        st.markdown('<div class="category-container">', unsafe_allow_html=True)
-        st.markdown('<div class="section-header">Kreacja</div>', unsafe_allow_html=True)
-        
-        # Content (treść)
-        st.markdown('utm_content (wersja kreacji):', unsafe_allow_html=True)
-        utm_content = st.text_input(
-            "",
-            "",
-            help="Wprowadź wersję kreacji",
-            key="utm_content",
-            placeholder="np. email_short, banner_900x344_blue",
-            label_visibility="collapsed"
-        )
-        
-        # Creative ID (ID kreacji)
-        st.markdown('utm_creative_id (id z adserwera):', unsafe_allow_html=True)
-        utm_creative_id = st.text_input(
-            "",
-            "",
-            help="Wprowadź ID z adserwera",
-            key="utm_creative_id",
-            placeholder="np. 123456",
-            label_visibility="collapsed"
-        )
-        
-        # Term (słowo kluczowe)
-        st.markdown('utm_term (argument, słowo kluczowe):', unsafe_allow_html=True)
-        utm_term = st.text_input(
-            "",
-            "",
-            help="Wprowadź argument lub słowo kluczowe",
-            key="utm_term",
-            placeholder="np. marketing, analytics",
-            label_visibility="collapsed"
-        )
-        
-        st.markdown('</div>', unsafe_allow_html=True)
     
     with col2:
-        # Sekcja Kampania
-        st.markdown('<div class="category-container">', unsafe_allow_html=True)
-        st.markdown('<div class="section-header">Kampania</div>', unsafe_allow_html=True)
+        st.markdown('<span class="required">*</span> **utm_source (platforma/dostawca):**', unsafe_allow_html=True)
         
-        # ID (numer akcji)
-        st.markdown('<span class="required">*</span> utm_id (numer akcji):', unsafe_allow_html=True)
+        # Source suggestions based on channel
+        source_suggestions = get_sources_for_channel(utm_channel, config)
+        source_options = source_suggestions + ["🖊️ Własna wartość..."]
+        
+        utm_source_choice = st.selectbox(
+            "",
+            options=[""] + source_options,
+            key="utm_source_choice",
+            label_visibility="collapsed"
+        )
+        
+        if utm_source_choice == "🖊️ Własna wartość...":
+            utm_source = st.text_input("Wprowadź własną wartość:", key="utm_source_custom", placeholder="np. custom_source")
+        else:
+            utm_source = utm_source_choice if utm_source_choice else ""
+        
+        st.markdown('<span class="required">*</span> **utm_medium (taktyka/typ ruchu):**', unsafe_allow_html=True)
+        
+        # Medium suggestions based on channel
+        medium_suggestions = get_mediums_for_channel(utm_channel, config)
+        medium_options = medium_suggestions + ["🖊️ Własna wartość..."]
+        
+        utm_medium_choice = st.selectbox(
+            "",
+            options=[""] + medium_options,
+            key="utm_medium_choice",
+            label_visibility="collapsed"
+        )
+        
+        if utm_medium_choice == "🖊️ Własna wartość...":
+            utm_medium = st.text_input("Wprowadź własną wartość:", key="utm_medium_custom", placeholder="np. custom_medium")
+        else:
+            utm_medium = utm_medium_choice if utm_medium_choice else ""
+        
+        st.markdown('<span class="required">*</span> **utm_id (numer akcji):**', unsafe_allow_html=True)
         utm_id = st.text_input(
             "",
-            "",
+            st.session_state.get("utm_id", ""),
             help="Wprowadź numer akcji",
             key="utm_id",
             placeholder="np. 43234/1",
             label_visibility="collapsed"
         )
-        
-        # Campaign (kampania)
-        st.markdown('utm_campaign (nazwa kampanii/inicjatywy):', unsafe_allow_html=True)
-        utm_campaign = st.text_input(
-            "",
-            "",
-            help="Wprowadź nazwę kampanii lub inicjatywy",
-            key="utm_campaign",
-            placeholder="np. cel_marketingowy-linia_produktowa-segment-rodzaj",
-            label_visibility="collapsed"
-        )
-        
-        # Goal (cel kampanii)
-        st.markdown('utm_goal (cel kampanii):', unsafe_allow_html=True)
-        utm_goal = st.selectbox(
-            "",
-            options=[""] + config.get("goals", []),
-            help="Wybierz cel kampanii",
-            key="utm_goal",
-            label_visibility="collapsed"
-        )
-        
-        # Stage (etap)
-        st.markdown('utm_stage (etap lejka):', unsafe_allow_html=True)
-        utm_stage = st.selectbox(
-            "",
-            options=[""] + config.get("stages", []),
-            help="Wybierz etap lejka marketingowego",
-            key="utm_stage",
-            label_visibility="collapsed"
-        )
-        
-        # Cohort (kohorta)
-        st.markdown('utm_cohort (kohorta/persona):', unsafe_allow_html=True)
-        utm_cohort = st.text_input(
-            "",
-            "",
-            help="Wprowadź kohortę lub personę",
-            key="utm_cohort",
-            placeholder="np. new_customers, loyal_clients",
-            label_visibility="collapsed"
-        )
-        
-        st.markdown('</div>', unsafe_allow_html=True)
     
-    # Przycisk generowania - musi być ostatnim elementem w formularzu
-    submit = st.form_submit_button("Generuj link UTM")
+    # Walidacja na żywo - tylko jeśli włączona w konfiguracji
+    if ui_settings.get("show_validation", True) and utm_channel and utm_source and utm_medium:
+        validation_messages = validate_combination(utm_channel, utm_source, utm_medium, config)
+        for msg_type, message in validation_messages:
+            if msg_type == "warning":
+                st.markdown(f'<div class="validation-warning">{message}</div>', unsafe_allow_html=True)
+            elif msg_type == "success":
+                st.markdown(f'<div class="validation-success">{message}</div>', unsafe_allow_html=True)
+            elif msg_type == "info":
+                st.markdown(f'<div class="validation-info">{message}</div>', unsafe_allow_html=True)
+    
+    # 🎯 KAMPANIA (opcjonalne)
+    st.markdown('<div class="section-header">🎯 KAMPANIA (opcjonalne)</div>', unsafe_allow_html=True)
+    
+    col3, col4 = st.columns(2)
+    
+    with col3:
+        utm_campaign = st.text_input(
+            "utm_campaign (nazwa kampanii/inicjatywy)",
+            st.session_state.get("utm_campaign", ""),
+            placeholder="np. cel_marketingowy-linia_produktowa-segment-rodzaj"
+        )
+        
+        utm_goal = st.selectbox(
+            "utm_goal (cel kampanii)",
+            options=[""] + config.get("goals", [])
+        )
+    
+    with col4:
+        utm_stage = st.selectbox(
+            "utm_stage (etap lejka)",
+            options=[""] + config.get("stages", [])
+        )
+        
+        utm_cohort = st.text_input(
+            "utm_cohort (kohorta/persona)",
+            placeholder="np. new_customers, loyal_clients"
+        )
+    
+    # 🎨 KREACJA (opcjonalne)
+    st.markdown('<div class="section-header">🎨 KREACJA (opcjonalne)</div>', unsafe_allow_html=True)
+    
+    col5, col6, col7 = st.columns(3)
+    
+    with col5:
+        utm_content = st.text_input(
+            "utm_content (wersja kreacji)",
+            placeholder="np. email_short, banner_900x344_blue"
+        )
+    
+    with col6:
+        utm_creative_id = st.text_input(
+            "utm_creative_id (id z adserwera)",
+            placeholder="np. 123456"
+        )
+    
+    with col7:
+        utm_term = st.text_input(
+            "utm_term (argument, słowo kluczowe)",
+            placeholder="np. marketing, analytics"
+        )
+    
+    # Update live preview podczas wypełniania
+    utm_params_preview = {
+        "utm_market": utm_market,
+        "utm_channel": utm_channel,
+        "utm_source": utm_source,
+        "utm_medium": utm_medium,
+        "utm_id": utm_id,
+        "utm_campaign": utm_campaign,
+        "utm_goal": utm_goal,
+        "utm_stage": utm_stage,
+        "utm_cohort": utm_cohort,
+        "utm_content": utm_content,
+        "utm_creative_id": utm_creative_id,
+        "utm_term": utm_term
+    }
+    
+    if base_url:
+        update_live_preview(base_url, utm_params_preview)
+    
+    # Przycisk generowania
+    submit = st.form_submit_button("🚀 Generuj finalny link UTM")
 
-# Przetwarzanie po kliknięciu przycisku
+# Przetwarzanie po kliknięciu
 if submit:
-    # Walidacja wymaganych pól
     required_fields = {
         "URL bazowy": base_url,
         "utm_market": utm_market,
@@ -379,34 +535,15 @@ if submit:
     if missing_fields:
         st.error(f"Proszę wypełnić następujące wymagane pola: {', '.join(missing_fields)}")
     else:
-        # Parametry UTM
-        utm_params = {
-            "utm_market": utm_market,
-            "utm_channel": utm_channel,
-            "utm_source": utm_source,
-            "utm_medium": utm_medium,
-            "utm_id": utm_id,
-            "utm_campaign": utm_campaign,
-            "utm_goal": utm_goal,
-            "utm_stage": utm_stage,
-            "utm_cohort": utm_cohort,
-            "utm_content": utm_content,
-            "utm_creative_id": utm_creative_id,
-            "utm_term": utm_term
-        }
+        final_url = generate_utm_link(base_url, utm_params_preview)
         
-        # Generowanie linku
-        final_url = generate_utm_link(base_url, utm_params)
-        
-        # Wyświetlenie wyniku
         st.markdown('<div class="result-container">', unsafe_allow_html=True)
-        st.markdown('<div class="section-header">Wygenerowany link UTM</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">🎉 Finalny link UTM</div>', unsafe_allow_html=True)
         
-        # Kolorowanie linku z podziałem na nazwy parametrów i ich wartości
+        # Kolorowany URL
         parts = final_url.split("?")
         base_part = parts[0]
         
-        # Jeśli są parametry, podziel je i pokoloruj
         if len(parts) > 1:
             params_text = ""
             params = parts[1].split("&")
@@ -431,40 +568,29 @@ if submit:
         <p style="font-size: 0.8em; color: #9ca3af; margin-top: 5px;">Kliknij ikonę po prawej stronie poniżej, aby skopiować cały link</p>
         """, unsafe_allow_html=True)
         
-        # Standardowe pole z kodem również dla łatwego kopiowania
         st.code(final_url, language=None)
-        
         st.markdown('</div>', unsafe_allow_html=True)
 
-# Informacje o parametrach UTM
-with st.expander("Informacje o parametrach UTM"):
+# Informacje
+with st.expander("📖 Informacje o parametrach UTM"):
     st.markdown("""
     ### Parametry UTM
     
-    #### Źródło ruchu
+    #### 📊 Źródło ruchu
     - **utm_market** - rynek: medica, education, lifestyle
     - **utm_channel** - najwyższy poziom źródła: paid, owned, earned, affiliate, offline
     - **utm_source** - platforma/dostawca: google, facebook, salesmanago
     - **utm_medium** - taktyka/typ ruchu: cpc, cpm, organic
     
-    #### Kampania
+    #### 🎯 Kampania
     - **utm_id** - numer akcji
-    - **utm_campaign** - nazwa kampanii/inicjatywy (Wg. konwencji: cel_marketingowy-linia_produktowa-segment-rodzaj)
+    - **utm_campaign** - nazwa kampanii/inicjatywy
     - **utm_goal** - cel kampanii: sales, traffic, leads
     - **utm_stage** - etap lejka: reach, engage, consider, convert, retain, upsell, advocate
     - **utm_cohort** - kohorta/persona
     
-    **Etapy lejka marketingowego:**
-    - **reach** - Budowanie świadomości marki (dotarcie do nowych odbiorców)
-    - **engage** - Pierwsze zaangażowanie odbiorcy (wzbudzenie ciekawości)
-    - **consider** - Rozważenie oferty (zachęcenie do zapoznania się z subskrypcją)
-    - **convert** - Zakup lub subskrypcja (przekonanie do podjęcia decyzji zakupowej)
-    - **retain** - Utrzymanie klienta
-    - **upsell** - Zwiększenie wartości klienta (przedłużenie subskrypcji, sprzedaż dodatków)
-    - **advocate** - Rekomendacje od klientów (pozyskanie nowych subskrybentów przez obecnych)
-    
-    #### Kreacja
-    - **utm_content** - wersja kreacji: email_short, banner_900x344_blue, popup_blue
+    #### 🎨 Kreacja
+    - **utm_content** - wersja kreacji
     - **utm_creative_id** - id z adserwera
     - **utm_term** - argument, słowo kluczowe
     """)

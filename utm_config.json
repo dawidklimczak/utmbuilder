@@ -76,12 +76,21 @@
         "medica", 
         "education", 
         "lifestyle", 
-        "business"
+        "finance", 
+        "technology"
     ],
     "stages": [
-        "awareness", 
-        "consideration", 
-        "conversion", 
-        "loyalty"
+        "reach", 
+        "engage", 
+        "consider", 
+        "convert", 
+        "retain", 
+        "upsell", 
+        "advocate"
+    ],
+    "goals": [
+        "sales", 
+        "traffic", 
+        "leads"
     ]
 }
