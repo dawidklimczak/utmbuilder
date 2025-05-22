@@ -370,8 +370,17 @@ with st.form("utm_form"):
             label_visibility="collapsed"
         )
         
+        # Pole tekstowe zawsze widoczne, ale enabled/disabled w zależności od wyboru
+        utm_source_custom = st.text_input(
+            "Wprowadź własną wartość:", 
+            key="utm_source_custom", 
+            placeholder="np. custom_source",
+            disabled=(utm_source_choice != "Własna wartość...")
+        )
+        
+        # Ustal finalną wartość utm_source
         if utm_source_choice == "Własna wartość...":
-            utm_source = st.text_input("Wprowadź własną wartość:", key="utm_source_custom", placeholder="np. custom_source")
+            utm_source = utm_source_custom
         else:
             utm_source = utm_source_choice if utm_source_choice else ""
         
@@ -387,8 +396,17 @@ with st.form("utm_form"):
             label_visibility="collapsed"
         )
         
+        # Pole tekstowe zawsze widoczne, ale enabled/disabled w zależności od wyboru
+        utm_medium_custom = st.text_input(
+            "Wprowadź własną wartość:", 
+            key="utm_medium_custom", 
+            placeholder="np. custom_medium",
+            disabled=(utm_medium_choice != "Własna wartość...")
+        )
+        
+        # Ustal finalną wartość utm_medium
         if utm_medium_choice == "Własna wartość...":
-            utm_medium = st.text_input("Wprowadź własną wartość:", key="utm_medium_custom", placeholder="np. custom_medium")
+            utm_medium = utm_medium_custom
         else:
             utm_medium = utm_medium_choice if utm_medium_choice else ""
         
