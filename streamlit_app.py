@@ -292,6 +292,8 @@ def apply_template(template_name, config):
         for key, value in template.items():
             if key != "description":
                 st.session_state[key] = value
+        # Dodajemy flagę, że szablon został zastosowany
+        st.session_state["template_applied"] = template_name
 
 # Nagłówek aplikacji
 st.title("🚀 UTM Builder Pro")
@@ -317,7 +319,17 @@ if ui_settings.get("show_templates", True):
             if st.button(template_name, key=f"template_{i}", help=campaign_templates[template_name].get("description", "")):
                 apply_template(template_name, config)
                 st.success(f"Zastosowano szablon: {template_name}")
-                st.experimental_rerun()
+
+# Sprawdź czy szablon został zastosowany i wyczyść flagę
+if "template_applied" in st.session_state:
+    st.info(f"✅ Aktywny szablon: {st.session_state['template_applied']}")
+    # Opcjonalnie wyczyść po pewnym czasie
+    if st.button("Wyczyść szablon", key="clear_template"):
+        # Wyczyść tylko pola związane z szablonem
+        fields_to_clear = ["utm_channel", "utm_source", "utm_medium", "template_applied"]
+        for field in fields_to_clear:
+            if field in st.session_state:
+                del st.session_state[field]
 
 # Live Preview - tylko jeśli włączone w konfiguracji
 if ui_settings.get("show_live_preview", True) and st.session_state.live_preview_url:
