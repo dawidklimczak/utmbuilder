@@ -332,7 +332,7 @@ with st.form("utm_form"):
         st.markdown('**URL bazowy** *', unsafe_allow_html=True)
         base_url = st.text_input(
             "",
-            st.session_state.get("base_url", ui_settings.get("default_base_url", "https://example.com")),
+            value=st.session_state.get("base_url", ui_settings.get("default_base_url", "https://example.com")),
             help="Wprowadź adres strony docelowej",
             key="base_url",
             placeholder="https://example.com/strona-docelowa",
@@ -343,7 +343,6 @@ with st.form("utm_form"):
         utm_market = st.selectbox(
             "",
             options=[""] + config.get("markets", []),
-            index=0 if not st.session_state.get("utm_market") else config.get("markets", []).index(st.session_state.get("utm_market")) + 1 if st.session_state.get("utm_market") in config.get("markets", []) else 0,
             help="Wybierz rynek docelowy",
             key="utm_market",
             label_visibility="collapsed"
@@ -353,7 +352,6 @@ with st.form("utm_form"):
         utm_channel = st.selectbox(
             "",
             options=[""] + config.get("channels", []),
-            index=0 if not st.session_state.get("utm_channel") else config.get("channels", []).index(st.session_state.get("utm_channel")) + 1 if st.session_state.get("utm_channel") in config.get("channels", []) else 0,
             help="Wybierz najwyższy poziom źródła ruchu",
             key="utm_channel",
             label_visibility="collapsed"
@@ -397,7 +395,7 @@ with st.form("utm_form"):
         st.markdown('**utm_id (numer akcji)** *', unsafe_allow_html=True)
         utm_id = st.text_input(
             "",
-            st.session_state.get("utm_id", ""),
+            value=st.session_state.get("utm_id", ""),
             help="Wprowadź numer akcji",
             key="utm_id",
             placeholder="np. 43234/1",
@@ -421,7 +419,7 @@ with st.form("utm_form"):
     with col3:
         utm_campaign = st.text_input(
             "utm_campaign (nazwa kampanii/inicjatywy)",
-            st.session_state.get("utm_campaign", ""),
+            value=st.session_state.get("utm_campaign", ""),
             placeholder="np. cel_marketingowy-linia_produktowa-segment-rodzaj"
         )
         
