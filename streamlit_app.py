@@ -125,6 +125,7 @@ def clear_source_medium():
         st.session_state["utm_medium_select"] = ""
     if "utm_medium_custom" in st.session_state:
         st.session_state["utm_medium_custom"] = ""
+def load_config():
     config_path = "utm_config.json"
     if os.path.exists(config_path):
         try:
