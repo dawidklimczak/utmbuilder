@@ -125,6 +125,17 @@ def clear_source_medium():
         st.session_state["utm_medium_select"] = ""
     if "utm_medium_custom" in st.session_state:
         st.session_state["utm_medium_custom"] = ""
+def clear_source_medium():
+    """Wyczyść source i medium gdy zmieni się channel"""
+    if "utm_source_select" in st.session_state:
+        st.session_state["utm_source_select"] = ""
+    if "utm_source_custom" in st.session_state:
+        st.session_state["utm_source_custom"] = ""
+    if "utm_medium_select" in st.session_state:
+        st.session_state["utm_medium_select"] = ""
+    if "utm_medium_custom" in st.session_state:
+        st.session_state["utm_medium_custom"] = ""
+
 def load_config():
     config_path = "utm_config.json"
     if os.path.exists(config_path):
@@ -257,6 +268,20 @@ if ui_settings.get("show_templates", True):
         if template_desc:
             st.info(f"Zastosowano szablon: {template_desc}")
 
+# Wybór kanału POZA formularzem (żeby działał callback)
+st.markdown('<div class="section-header">Klasyfikacja kanału</div>', unsafe_allow_html=True)
+
+utm_channel = st.selectbox(
+    "**utm_channel (najwyższy poziom)** *",
+    options=[""] + config.get("channels", []),
+    help="Wybierz najwyższy poziom źródła ruchu - po zmianie automatycznie wyczyści się source i medium",
+    key="utm_channel",
+    on_change=clear_source_medium
+)
+
+if utm_channel:
+    st.success(f"✅ Wybrany kanał: **{utm_channel}**")
+
 # Live Preview
 if ui_settings.get("show_live_preview", True) and st.session_state.live_preview_url:
     st.markdown('<div class="section-header">Podgląd linku</div>', unsafe_allow_html=True)
@@ -311,15 +336,6 @@ with st.form("utm_form"):
             options=[""] + config.get("markets", []),
             help="Wybierz rynek docelowy",
             key="utm_market",
-            label_visibility="collapsed"
-        )
-        
-        st.markdown('**utm_channel (najwyższy poziom)** *', unsafe_allow_html=True)
-        utm_channel = st.selectbox(
-            "",
-            options=[""] + config.get("channels", []),
-            help="Wybierz najwyższy poziom źródła ruchu",
-            key="utm_channel",
             label_visibility="collapsed"
         )
     
