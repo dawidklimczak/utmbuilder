@@ -115,7 +115,16 @@ if "live_preview_url" not in st.session_state:
     st.session_state.live_preview_url = ""
 
 # Funkcje pomocnicze
-def load_config():
+def clear_source_medium():
+    """Wyczyść source i medium gdy zmieni się channel"""
+    if "utm_source_select" in st.session_state:
+        st.session_state["utm_source_select"] = ""
+    if "utm_source_custom" in st.session_state:
+        st.session_state["utm_source_custom"] = ""
+    if "utm_medium_select" in st.session_state:
+        st.session_state["utm_medium_select"] = ""
+    if "utm_medium_custom" in st.session_state:
+        st.session_state["utm_medium_custom"] = ""
     config_path = "utm_config.json"
     if os.path.exists(config_path):
         try:
@@ -310,7 +319,8 @@ with st.form("utm_form"):
             options=[""] + config.get("channels", []),
             help="Wybierz najwyższy poziom źródła ruchu",
             key="utm_channel",
-            label_visibility="collapsed"
+            label_visibility="collapsed",
+            on_change=clear_source_medium
         )
     
     with col2:
@@ -318,13 +328,17 @@ with st.form("utm_form"):
         
         source_suggestions = get_sources_for_channel(utm_channel, config)
         
+        # Informacja o braku sugestii
+        if utm_channel and not source_suggestions:
+            st.info(f"Brak predefiniowanych źródeł dla kanału '{utm_channel}'. Użyj pola tekstowego.")
+        
         # Combo: selectbox + text_input w dwóch kolumnach
         col_source_1, col_source_2 = st.columns([3, 2])
         
         with col_source_1:
             utm_source_select = st.selectbox(
                 "",
-                options=[""] + source_suggestions + ["Inne..."],
+                options=[""] + source_suggestions + (["Inne..."] if source_suggestions else []),
                 key="utm_source_select",
                 label_visibility="collapsed"
             )
@@ -349,13 +363,17 @@ with st.form("utm_form"):
         
         medium_suggestions = get_mediums_for_channel(utm_channel, config)
         
+        # Informacja o braku sugestii
+        if utm_channel and not medium_suggestions:
+            st.info(f"Brak predefiniowanych mediów dla kanału '{utm_channel}'. Użyj pola tekstowego.")
+        
         # Combo: selectbox + text_input w dwóch kolumnach
         col_medium_1, col_medium_2 = st.columns([3, 2])
         
         with col_medium_1:
             utm_medium_select = st.selectbox(
                 "",
-                options=[""] + medium_suggestions + ["Inne..."],
+                options=[""] + medium_suggestions + (["Inne..."] if medium_suggestions else []),
                 key="utm_medium_select",
                 label_visibility="collapsed"
             )
