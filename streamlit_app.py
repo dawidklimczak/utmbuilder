@@ -309,7 +309,7 @@ with col_basic_3:
 if base_url and utm_market and utm_channel:
     st.success(f"✅ Podstawowe parametry: **{utm_market}** → **{utm_channel}** → {base_url}")
 elif utm_channel:
-    st.info(f"📝 Wybrany kanał: **{utm_channel}** (uzupełnij pozostałe pola)
+    st.info(f"📝 Wybrany kanał: **{utm_channel}** (uzupełnij pozostałe pola)")
 
 # Live Preview
 if ui_settings.get("show_live_preview", True) and st.session_state.live_preview_url:
@@ -359,7 +359,6 @@ with st.form("utm_form"):
             label_visibility="collapsed"
         )
     
-    with col2:
     with col2:
         st.markdown('**utm_source (platforma/dostawca)** *', unsafe_allow_html=True)
         
