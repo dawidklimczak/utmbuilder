@@ -1,96 +1,380 @@
 {
-    "channels": [
-        "paid", 
-        "owned", 
-        "earned", 
-        "affiliate", 
-        "offline"
-    ],
-    "channel_source_medium_mapping": {
-        "paid": {
-            "sources": [
-                "google", 
-                "facebook", 
-                "linkedin", 
-                "twitter", 
-                "bing"
-            ],
-            "mediums": [
-                "cpc", 
-                "cpm", 
-                "display", 
-                "video"
-            ]
-        },
-        "owned": {
-            "sources": [
-                "website", 
-                "newsletter", 
-                "email", 
-                "blog"
-            ],
-            "mediums": [
-                "email", 
-                "referral", 
-                "organic"
-            ]
-        },
-        "earned": {
-            "sources": [
-                "press", 
-                "media", 
-                "blog", 
-                "review"
-            ],
-            "mediums": [
-                "organic", 
-                "referral", 
-                "social"
-            ]
-        },
-        "affiliate": {
-            "sources": [
-                "partner", 
-                "affiliate"
-            ],
-            "mediums": [
-                "affiliate", 
-                "referral"
-            ]
-        },
-        "offline": {
-            "sources": [
-                "print", 
-                "tv", 
-                "radio", 
-                "event"
-            ],
-            "mediums": [
-                "qr", 
-                "direct", 
-                "promo"
-            ]
-        }
+  "channels": [
+    "paid",
+    "owned", 
+    "earned",
+    "affiliate",
+    "offline"
+  ],
+  
+  "channel_source_medium_mapping": {
+    "paid": {
+      "sources": [
+        "google",
+        "facebook", 
+        "instagram",
+        "linkedin",
+        "twitter",
+        "tiktok",
+        "youtube",
+        "bing",
+        "duckduckgo",
+        "allegro",
+        "olx",
+        "amazon",
+        "salesmanago",
+        "mailchimp"
+      ],
+      "mediums": [
+        "cpc",
+        "cpm", 
+        "display",
+        "video",
+        "shopping",
+        "sponsored",
+        "retargeting",
+        "remarketing"
+      ]
     },
-    "markets": [
-        "medica", 
-        "education", 
-        "lifestyle", 
-        "finance", 
-        "technology"
+    "owned": {
+      "sources": [
+        "website",
+        "newsletter",
+        "email",
+        "blog",
+        "app",
+        "crm",
+        "database",
+        "intranet"
+      ],
+      "mediums": [
+        "email",
+        "referral", 
+        "organic",
+        "push",
+        "sms",
+        "direct",
+        "internal"
+      ]
+    },
+    "earned": {
+      "sources": [
+        "press",
+        "media",
+        "blog",
+        "review",
+        "influencer",
+        "podcast",
+        "forum",
+        "reddit",
+        "facebook_organic",
+        "instagram_organic",
+        "linkedin_organic",
+        "twitter_organic"
+      ],
+      "mediums": [
+        "organic",
+        "referral",
+        "social",
+        "mention",
+        "viral",
+        "word_of_mouth"
+      ]
+    },
+    "affiliate": {
+      "sources": [
+        "partner",
+        "affiliate",
+        "reseller",
+        "distributor",
+        "broker",
+        "agent"
+      ],
+      "mediums": [
+        "affiliate",
+        "referral",
+        "commission",
+        "partnership"
+      ]
+    },
+    "offline": {
+      "sources": [
+        "print",
+        "tv",
+        "radio",
+        "event",
+        "conference",
+        "billboard",
+        "brochure",
+        "business_card",
+        "presentation",
+        "meeting"
+      ],
+      "mediums": [
+        "qr",
+        "direct",
+        "promo",
+        "coupon",
+        "print",
+        "broadcast",
+        "event"
+      ]
+    }
+  },
+  
+  "markets": [
+    "medica",
+    "education", 
+    "lifestyle",
+    "finance",
+    "technology",
+    "healthcare",
+    "automotive",
+    "real_estate",
+    "travel",
+    "fashion",
+    "food",
+    "sports",
+    "entertainment",
+    "b2b",
+    "b2c"
+  ],
+  
+  "stages": [
+    "awareness",
+    "reach",
+    "interest", 
+    "engage",
+    "consideration",
+    "consider",
+    "intent",
+    "purchase",
+    "convert",
+    "retention",
+    "retain",
+    "loyalty",
+    "upsell",
+    "cross_sell",
+    "advocacy",
+    "advocate"
+  ],
+  
+  "goals": [
+    "sales",
+    "revenue",
+    "traffic",
+    "leads",
+    "conversions",
+    "engagement",
+    "brand_awareness",
+    "retention",
+    "acquisition",
+    "downloads",
+    "subscriptions",
+    "registrations",
+    "webinar",
+    "demo",
+    "trial"
+  ],
+  
+  "campaign_templates": {
+    "Google Ads - Search": {
+      "utm_channel": "paid",
+      "utm_source": "google",
+      "utm_medium": "cpc",
+      "utm_goal": "traffic",
+      "description": "Kampania Google Ads - wyszukiwarka płatna"
+    },
+    "Google Ads - Display": {
+      "utm_channel": "paid", 
+      "utm_source": "google",
+      "utm_medium": "display",
+      "utm_goal": "brand_awareness",
+      "description": "Kampania Google Ads - sieć reklamowa"
+    },
+    "Google Ads - YouTube": {
+      "utm_channel": "paid",
+      "utm_source": "youtube", 
+      "utm_medium": "video",
+      "utm_goal": "engagement",
+      "description": "Reklamy wideo na YouTube"
+    },
+    "Facebook Ads - Traffic": {
+      "utm_channel": "paid",
+      "utm_source": "facebook",
+      "utm_medium": "cpc", 
+      "utm_goal": "traffic",
+      "description": "Facebook Ads - ruch na stronę"
+    },
+    "Facebook Ads - Conversions": {
+      "utm_channel": "paid",
+      "utm_source": "facebook",
+      "utm_medium": "cpc",
+      "utm_goal": "conversions", 
+      "description": "Facebook Ads - konwersje"
+    },
+    "Instagram Ads": {
+      "utm_channel": "paid",
+      "utm_source": "instagram",
+      "utm_medium": "cpc",
+      "utm_goal": "engagement",
+      "description": "Reklamy na Instagram"
+    },
+    "LinkedIn Ads": {
+      "utm_channel": "paid",
+      "utm_source": "linkedin", 
+      "utm_medium": "cpc",
+      "utm_goal": "leads",
+      "description": "LinkedIn Ads - marketing B2B"
+    },
+    "Email Newsletter": {
+      "utm_channel": "owned",
+      "utm_source": "newsletter",
+      "utm_medium": "email",
+      "utm_goal": "engagement",
+      "description": "Newsletter email - własny kanał"
+    },
+    "Email Campaign": {
+      "utm_channel": "owned",
+      "utm_source": "email",
+      "utm_medium": "email", 
+      "utm_goal": "conversions",
+      "description": "Kampania email marketingowa"
+    },
+    "Retargeting Facebook": {
+      "utm_channel": "paid",
+      "utm_source": "facebook",
+      "utm_medium": "retargeting",
+      "utm_goal": "conversions",
+      "description": "Remarketing Facebook"
+    },
+    "Retargeting Google": {
+      "utm_channel": "paid", 
+      "utm_source": "google",
+      "utm_medium": "display",
+      "utm_goal": "conversions",
+      "description": "Remarketing Google Display"
+    },
+    "Press Release": {
+      "utm_channel": "earned",
+      "utm_source": "press",
+      "utm_medium": "organic",
+      "utm_goal": "brand_awareness", 
+      "description": "Komunikat prasowy"
+    },
+    "Influencer Campaign": {
+      "utm_channel": "earned",
+      "utm_source": "influencer",
+      "utm_medium": "social",
+      "utm_goal": "brand_awareness",
+      "description": "Kampania influencer marketing"
+    },
+    "Affiliate Program": {
+      "utm_channel": "affiliate",
+      "utm_source": "partner", 
+      "utm_medium": "affiliate",
+      "utm_goal": "sales",
+      "description": "Program partnerski"
+    },
+    "Event QR Code": {
+      "utm_channel": "offline",
+      "utm_source": "event",
+      "utm_medium": "qr",
+      "utm_goal": "leads",
+      "description": "Kod QR na wydarzeniu"
+    },
+    "Print Ad": {
+      "utm_channel": "offline",
+      "utm_source": "print",
+      "utm_medium": "qr", 
+      "utm_goal": "traffic",
+      "description": "Reklama w prasie z kodem QR"
+    }
+  },
+  
+  "validation_rules": {
+    "warnings": [
+      {
+        "channel": "paid", 
+        "medium": "organic",
+        "message": "Channel 'paid' z medium 'organic' - czy to na pewno poprawne? Organic zazwyczaj nie jest płatne"
+      },
+      {
+        "channel": "owned",
+        "medium": "cpc", 
+        "message": "Channel 'owned' z medium 'cpc' - sprawdź czy to rzeczywiście własny kanał czy płatna reklama"
+      },
+      {
+        "channel": "earned",
+        "medium": "cpc",
+        "message": "Earned media zwykle nie używa medium 'cpc' - sprawdź czy to nie paid media"
+      },
+      {
+        "channel": "offline",
+        "medium": "cpc",
+        "message": "Offline + CPC to nietypowa kombinacja - sprawdź klasyfikację"
+      },
+      {
+        "channel": "affiliate", 
+        "medium": "organic",
+        "message": "Affiliate + organic - upewnij się, że to właściwa klasyfikacja"
+      }
     ],
-    "stages": [
-        "reach", 
-        "engage", 
-        "consider", 
-        "convert", 
-        "retain", 
-        "upsell", 
-        "advocate"
-    ],
-    "goals": [
-        "sales", 
-        "traffic", 
-        "leads"
+    "success": [
+      {
+        "channel": "paid",
+        "medium": "cpc", 
+        "message": "Świetnie! Klasyczna kombinacja dla paid search i social ads"
+      },
+      {
+        "channel": "paid",
+        "medium": "display",
+        "message": "Dobra kombinacja dla remarketing i display advertising"
+      },
+      {
+        "channel": "paid",
+        "medium": "video",
+        "message": "Idealne dla kampanii wideo na YouTube, Facebook, TikTok"
+      },
+      {
+        "channel": "owned", 
+        "medium": "email",
+        "message": "Idealne dla newsletter i email marketing"
+      },
+      {
+        "channel": "owned",
+        "medium": "referral", 
+        "message": "Świetne dla ruchu z własnej strony/bloga"
+      },
+      {
+        "channel": "earned",
+        "medium": "organic",
+        "message": "Doskonale! Typowe dla PR i earned media"
+      },
+      {
+        "channel": "earned",
+        "medium": "social",
+        "message": "Świetne dla organicznego zasięgu w social media"
+      },
+      {
+        "channel": "affiliate",
+        "medium": "affiliate", 
+        "message": "Perfekcyjne dla programów partnerskich"
+      },
+      {
+        "channel": "offline",
+        "medium": "qr",
+        "message": "Doskonale dla kampanii offline z kodami QR"
+      }
     ]
+  },
+  
+  "ui_settings": {
+    "show_live_preview": true,
+    "show_templates": true, 
+    "show_validation": true,
+    "default_base_url": "https://example.com",
+    "require_utm_id": true,
+    "auto_suggest_campaign_names": false
+  }
 }
