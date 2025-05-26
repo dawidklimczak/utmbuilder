@@ -236,7 +236,12 @@ def apply_template(template_name, config):
         template = campaign_templates[template_name]
         for key, value in template.items():
             if key != "description":
-                st.session_state[key] = value
+                if key == "utm_source":
+                    st.session_state["utm_source_select"] = value
+                elif key == "utm_medium":
+                    st.session_state["utm_medium_select"] = value
+                else:
+                    st.session_state[key] = value
 
 def generate_utm_link(base_url, params):
     filtered_params = {k: v for k, v in params.items() if v}
@@ -377,23 +382,43 @@ with st.form("utm_form"):
         
         source_suggestions = get_sources_for_channel(utm_channel, config)
         
-        utm_source = st.selectbox(
+        utm_source_select = st.selectbox(
             "",
-            options=[""] + source_suggestions,
-            key="utm_source",
+            options=[""] + source_suggestions + ["Inne..."],
+            key="utm_source_select",
             label_visibility="collapsed"
         )
+        
+        # Pole dla własnej wartości source
+        if utm_source_select == "Inne...":
+            utm_source = st.text_input(
+                "Wpisz własną wartość utm_source:",
+                key="utm_source_custom",
+                placeholder="np. moja_platforma"
+            )
+        else:
+            utm_source = utm_source_select
         
         st.markdown('**utm_medium (taktyka/typ ruchu)** *', unsafe_allow_html=True)
         
         medium_suggestions = get_mediums_for_channel(utm_channel, config)
         
-        utm_medium = st.selectbox(
+        utm_medium_select = st.selectbox(
             "",
-            options=[""] + medium_suggestions,
-            key="utm_medium",
+            options=[""] + medium_suggestions + ["Inne..."],
+            key="utm_medium_select",
             label_visibility="collapsed"
         )
+        
+        # Pole dla własnej wartości medium
+        if utm_medium_select == "Inne...":
+            utm_medium = st.text_input(
+                "Wpisz własną wartość utm_medium:",
+                key="utm_medium_custom",
+                placeholder="np. moj_typ_ruchu"
+            )
+        else:
+            utm_medium = utm_medium_select
         
         st.markdown('**utm_id (numer akcji)** *', unsafe_allow_html=True)
         utm_id = st.text_input(
