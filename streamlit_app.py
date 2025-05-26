@@ -268,19 +268,48 @@ if ui_settings.get("show_templates", True):
         if template_desc:
             st.info(f"Zastosowano szablon: {template_desc}")
 
-# Wybór kanału POZA formularzem (żeby działał callback)
-st.markdown('<div class="section-header">Klasyfikacja kanału</div>', unsafe_allow_html=True)
+# Podstawowe pola POZA formularzem (żeby działały callbacki)
+st.markdown('<div class="section-header">Podstawowe parametry (wymagane)</div>', unsafe_allow_html=True)
 
-utm_channel = st.selectbox(
-    "**utm_channel (najwyższy poziom)** *",
-    options=[""] + config.get("channels", []),
-    help="Wybierz najwyższy poziom źródła ruchu - po zmianie automatycznie wyczyści się source i medium",
-    key="utm_channel",
-    on_change=clear_source_medium
-)
+col_basic_1, col_basic_2, col_basic_3 = st.columns(3)
 
-if utm_channel:
-    st.success(f"✅ Wybrany kanał: **{utm_channel}**")
+with col_basic_1:
+    st.markdown('**URL bazowy** *', unsafe_allow_html=True)
+    base_url = st.text_input(
+        "",
+        value=st.session_state.get("base_url", ui_settings.get("default_base_url", "https://example.com")),
+        help="Wprowadź adres strony docelowej",
+        key="base_url",
+        placeholder="https://example.com/strona-docelowa",
+        label_visibility="collapsed"
+    )
+
+with col_basic_2:
+    st.markdown('**utm_market (rynek)** *', unsafe_allow_html=True)
+    utm_market = st.selectbox(
+        "",
+        options=[""] + config.get("markets", []),
+        help="Wybierz rynek docelowy",
+        key="utm_market",
+        label_visibility="collapsed"
+    )
+
+with col_basic_3:
+    st.markdown('**utm_channel (najwyższy poziom)** *', unsafe_allow_html=True)
+    utm_channel = st.selectbox(
+        "",
+        options=[""] + config.get("channels", []),
+        help="Wybierz najwyższy poziom źródła ruchu - po zmianie automatycznie wyczyści się source i medium",
+        key="utm_channel",
+        label_visibility="collapsed",
+        on_change=clear_source_medium
+    )
+
+# Potwierdzenie wyborów
+if base_url and utm_market and utm_channel:
+    st.success(f"✅ Podstawowe parametry: **{utm_market}** → **{utm_channel}** → {base_url}")
+elif utm_channel:
+    st.info(f"📝 Wybrany kanał: **{utm_channel}** (uzupełnij pozostałe pola)
 
 # Live Preview
 if ui_settings.get("show_live_preview", True) and st.session_state.live_preview_url:
@@ -314,102 +343,12 @@ if ui_settings.get("show_live_preview", True) and st.session_state.live_preview_
 
 # Główny formularz
 with st.form("utm_form"):
-    # TRACKING (wymagane)
-    st.markdown('<div class="section-header">Podstawowe parametry (wymagane)</div>', unsafe_allow_html=True)
+    # TRACKING - pozostałe pola wymagane
+    st.markdown('<div class="section-header">Identyfikacja i źródło</div>', unsafe_allow_html=True)
     
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.markdown('**URL bazowy** *', unsafe_allow_html=True)
-        base_url = st.text_input(
-            "",
-            value=st.session_state.get("base_url", ui_settings.get("default_base_url", "https://example.com")),
-            help="Wprowadź adres strony docelowej",
-            key="base_url",
-            placeholder="https://example.com/strona-docelowa",
-            label_visibility="collapsed"
-        )
-        
-        st.markdown('**utm_market (rynek)** *', unsafe_allow_html=True)
-        utm_market = st.selectbox(
-            "",
-            options=[""] + config.get("markets", []),
-            help="Wybierz rynek docelowy",
-            key="utm_market",
-            label_visibility="collapsed"
-        )
-    
-    with col2:
-        st.markdown('**utm_source (platforma/dostawca)** *', unsafe_allow_html=True)
-        
-        source_suggestions = get_sources_for_channel(utm_channel, config)
-        
-        # Informacja o braku sugestii
-        if utm_channel and not source_suggestions:
-            st.info(f"Brak predefiniowanych źródeł dla kanału '{utm_channel}'. Użyj pola tekstowego lub kliknij 'Generuj link UTM' żeby odświeżyć sugestie.")
-        
-        # Combo: selectbox + text_input w dwóch kolumnach
-        col_source_1, col_source_2 = st.columns([3, 2])
-        
-        with col_source_1:
-            utm_source_select = st.selectbox(
-                "",
-                options=[""] + source_suggestions + (["Inne..."] if source_suggestions else []),
-                key="utm_source_select",
-                label_visibility="collapsed"
-            )
-        
-        with col_source_2:
-            utm_source_custom = st.text_input(
-                "",
-                key="utm_source_custom",
-                placeholder="lub wpisz własną wartość",
-                label_visibility="collapsed"
-            )
-        
-        # Logika wyboru - własna wartość ma priorytet
-        if utm_source_custom.strip():
-            utm_source = utm_source_custom.strip()
-        elif utm_source_select and utm_source_select != "Inne...":
-            utm_source = utm_source_select
-        else:
-            utm_source = ""
-        
-        st.markdown('**utm_medium (taktyka/typ ruchu)** *', unsafe_allow_html=True)
-        
-        medium_suggestions = get_mediums_for_channel(utm_channel, config)
-        
-        # Informacja o braku sugestii
-        if utm_channel and not medium_suggestions:
-            st.info(f"Brak predefiniowanych mediów dla kanału '{utm_channel}'. Użyj pola tekstowego lub kliknij 'Generuj link UTM' żeby odświeżyć sugestie.")
-        
-        # Combo: selectbox + text_input w dwóch kolumnach
-        col_medium_1, col_medium_2 = st.columns([3, 2])
-        
-        with col_medium_1:
-            utm_medium_select = st.selectbox(
-                "",
-                options=[""] + medium_suggestions + (["Inne..."] if medium_suggestions else []),
-                key="utm_medium_select",
-                label_visibility="collapsed"
-            )
-        
-        with col_medium_2:
-            utm_medium_custom = st.text_input(
-                "",
-                key="utm_medium_custom",
-                placeholder="lub wpisz własną wartość",
-                label_visibility="collapsed"
-            )
-        
-        # Logika wyboru - własna wartość ma priorytet
-        if utm_medium_custom.strip():
-            utm_medium = utm_medium_custom.strip()
-        elif utm_medium_select and utm_medium_select != "Inne...":
-            utm_medium = utm_medium_select
-        else:
-            utm_medium = ""
-        
         st.markdown('**utm_id (numer akcji)** *', unsafe_allow_html=True)
         utm_id = st.text_input(
             "",
@@ -419,6 +358,71 @@ with st.form("utm_form"):
             placeholder="np. 43234/1",
             label_visibility="collapsed"
         )
+    
+    with col2:
+    with col2:
+        st.markdown('**utm_source (platforma/dostawca)** *', unsafe_allow_html=True)
+        
+        source_suggestions = get_sources_for_channel(utm_channel, config)
+        
+        # Informacja o braku sugestii
+        if utm_channel and not source_suggestions:
+            st.info(f"Brak predefiniowanych źródeł dla kanału '{utm_channel}'. Użyj pola tekstowego.")
+        
+        # Combo: selectbox + text_input 
+        utm_source_select = st.selectbox(
+            "",
+            options=[""] + source_suggestions + (["Inne..."] if source_suggestions else []),
+            key="utm_source_select",
+            label_visibility="collapsed"
+        )
+        
+        utm_source_custom = st.text_input(
+            "",
+            key="utm_source_custom",
+            placeholder="lub wpisz własną wartość",
+            label_visibility="collapsed"
+        )
+        
+        # Logika wyboru - własna wartość ma priorytet
+        if utm_source_custom.strip():
+            utm_source = utm_source_custom.strip()
+        elif utm_source_select and utm_source_select != "Inne...":
+            utm_source = utm_source_select
+        else:
+            utm_source = ""
+    
+    with col3:
+        st.markdown('**utm_medium (taktyka/typ ruchu)** *', unsafe_allow_html=True)
+        
+        medium_suggestions = get_mediums_for_channel(utm_channel, config)
+        
+        # Informacja o braku sugestii
+        if utm_channel and not medium_suggestions:
+            st.info(f"Brak predefiniowanych mediów dla kanału '{utm_channel}'. Użyj pola tekstowego.")
+        
+        # Combo: selectbox + text_input
+        utm_medium_select = st.selectbox(
+            "",
+            options=[""] + medium_suggestions + (["Inne..."] if medium_suggestions else []),
+            key="utm_medium_select",
+            label_visibility="collapsed"
+        )
+        
+        utm_medium_custom = st.text_input(
+            "",
+            key="utm_medium_custom",
+            placeholder="lub wpisz własną wartość",
+            label_visibility="collapsed"
+        )
+        
+        # Logika wyboru - własna wartość ma priorytet
+        if utm_medium_custom.strip():
+            utm_medium = utm_medium_custom.strip()
+        elif utm_medium_select and utm_medium_select != "Inne...":
+            utm_medium = utm_medium_select
+        else:
+            utm_medium = ""
     
     # Walidacja
     if ui_settings.get("show_validation", True) and utm_channel and utm_source and utm_medium:
