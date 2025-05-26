@@ -88,84 +88,15 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Domyślna konfiguracja
-DEFAULT_CONFIG = {
+# Domyślna konfiguracja - minimalna struktura na wypadek braku pliku
+FALLBACK_CONFIG = {
     "channels": ["paid", "owned", "earned", "affiliate", "offline"],
-    "channel_source_medium_mapping": {
-        "paid": {
-            "sources": ["google", "facebook", "linkedin", "twitter", "bing", "youtube"],
-            "mediums": ["cpc", "cpm", "display", "video"]
-        },
-        "owned": {
-            "sources": ["website", "newsletter", "email", "blog"],
-            "mediums": ["email", "referral", "organic"]
-        },
-        "earned": {
-            "sources": ["press", "media", "blog", "review"],
-            "mediums": ["organic", "referral", "social"]
-        },
-        "affiliate": {
-            "sources": ["partner", "affiliate"],
-            "mediums": ["affiliate", "referral"]
-        },
-        "offline": {
-            "sources": ["print", "tv", "radio", "event"],
-            "mediums": ["qr", "direct", "promo"]
-        }
-    },
-    "markets": ["medica", "education", "lifestyle", "finance", "technology"],
+    "markets": ["medica", "education", "lifestyle", "business", "technology"],
     "stages": ["reach", "engage", "consider", "convert", "retain", "upsell", "advocate"],
     "goals": ["sales", "traffic", "leads"],
-    "campaign_templates": {
-        "Google Ads": {
-            "utm_channel": "paid",
-            "utm_source": "google",
-            "utm_medium": "cpc",
-            "description": "Kampania Google Ads - wyszukiwanie płatne"
-        },
-        "Facebook Ads": {
-            "utm_channel": "paid", 
-            "utm_source": "facebook",
-            "utm_medium": "cpc",
-            "description": "Kampania Facebook Ads - reklamy społecznościowe"
-        },
-        "Email Newsletter": {
-            "utm_channel": "owned",
-            "utm_source": "newsletter", 
-            "utm_medium": "email",
-            "description": "Newsletter email - własny kanał komunikacji"
-        },
-        "YouTube Ads": {
-            "utm_channel": "paid",
-            "utm_source": "youtube",
-            "utm_medium": "video", 
-            "description": "Reklamy wideo na YouTube"
-        },
-        "Press Release": {
-            "utm_channel": "earned",
-            "utm_source": "press",
-            "utm_medium": "organic",
-            "description": "Komunikat prasowy - earned media"
-        },
-        "Retargeting": {
-            "utm_channel": "paid",
-            "utm_source": "facebook",
-            "utm_medium": "display",
-            "description": "Remarketing Facebook - wyświetlenia"
-        }
-    },
-    "validation_rules": {
-        "warnings": [
-            {"channel": "paid", "medium": "organic", "message": "Channel 'paid' z medium 'organic' - czy to na pewno poprawne?"},
-            {"channel": "owned", "medium": "cpc", "message": "Channel 'owned' z medium 'cpc' - sprawdź czy to płatna reklama"},
-            {"channel": "earned", "medium": "cpc", "message": "Earned media zwykle nie używa medium 'cpc'"}
-        ],
-        "success": [
-            {"channel": "paid", "medium": "cpc", "message": "Świetnie! Klasyczna kombinacja dla paid search"},
-            {"channel": "paid", "medium": "display", "message": "Dobra kombinacja dla remarketing/display ads"},
-            {"channel": "owned", "medium": "email", "message": "Idealne dla newsletter i email marketing"}
-        ]
-    },
+    "channel_source_medium_mapping": {},
+    "campaign_templates": {},
+    "validation_rules": {"warnings": [], "success": []},
     "ui_settings": {
         "show_live_preview": True,
         "show_templates": True,
@@ -178,7 +109,7 @@ CONFIG_KEY = "utm_config"
 
 # Inicjalizacja
 if CONFIG_KEY not in st.session_state:
-    st.session_state[CONFIG_KEY] = DEFAULT_CONFIG.copy()
+    st.session_state[CONFIG_KEY] = FALLBACK_CONFIG.copy()
 
 if "live_preview_url" not in st.session_state:
     st.session_state.live_preview_url = ""
@@ -186,25 +117,24 @@ if "live_preview_url" not in st.session_state:
 # Funkcje pomocnicze
 def load_config():
     config_path = "utm_config.json"
-    file_config = None
     if os.path.exists(config_path):
         try:
             with open(config_path, "r", encoding="utf-8") as f:
-                file_config = json.load(f)
+                config = json.load(f)
+                st.session_state[CONFIG_KEY] = config
+                return config
         except Exception as e:
-            st.warning(f"Błąd ładowania konfiguracji z pliku: {e}")
-    
-    if file_config:
-        config = file_config
+            st.error(f"Błąd ładowania konfiguracji z pliku utm_config.json: {e}")
+            st.info("Używam minimalnej konfiguracji awaryjnej. Sprawdź plik utm_config.json")
+            config = FALLBACK_CONFIG.copy()
+            st.session_state[CONFIG_KEY] = config
+            return config
     else:
-        config = st.session_state.get(CONFIG_KEY, DEFAULT_CONFIG.copy())
-    
-    for key, value in DEFAULT_CONFIG.items():
-        if key not in config:
-            config[key] = value
-    
-    st.session_state[CONFIG_KEY] = config
-    return config
+        st.warning("Nie znaleziono pliku utm_config.json. Używam minimalnej konfiguracji.")
+        st.info("Stwórz plik utm_config.json w katalogu aplikacji dla pełnej funkcjonalności.")
+        config = FALLBACK_CONFIG.copy()
+        st.session_state[CONFIG_KEY] = config
+        return config
 
 def get_sources_for_channel(channel, config):
     if not channel or "channel_source_medium_mapping" not in config:
@@ -290,6 +220,12 @@ st.markdown("Pola oznaczone * są wymagane")
 
 # Ładowanie konfiguracji
 config = load_config()
+
+# Pokaż status konfiguracji
+if os.path.exists("utm_config.json"):
+    st.success("✅ Załadowano konfigurację z utm_config.json")
+else:
+    st.warning("⚠️ Brak pliku utm_config.json - używam konfiguracji awaryjnej")
 
 # Szablony kampanii - prosty selectbox
 ui_settings = config.get("ui_settings", {})
