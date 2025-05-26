@@ -258,6 +258,21 @@ def generate_utm_link(base_url, params):
     
     return final_url
 
+def generate_utm_params_only(params):
+    """Generuje tylko parametry UTM bez URL bazowego"""
+    filtered_params = {k: v for k, v in params.items() if v}
+    
+    if "utm_id" in filtered_params:
+        filtered_params["a"] = filtered_params["utm_id"]
+    
+    encoded_params = []
+    for key, value in filtered_params.items():
+        encoded_value = urllib.parse.quote(value, safe='')
+        encoded_params.append(f"{key}={encoded_value}")
+    
+    params_string = "&".join(encoded_params)
+    return f"?{params_string}" if params_string else ""
+
 def update_live_preview(base_url, params):
     if base_url:
         preview_url = generate_utm_link(base_url, params)
@@ -489,6 +504,7 @@ if submit:
         st.error(f"Proszę wypełnić następujące wymagane pola: {', '.join(missing_fields)}")
     else:
         final_url = generate_utm_link(base_url, utm_params_preview)
+        utm_params_only = generate_utm_params_only(utm_params_preview)
         
         st.markdown('<div class="result-container">', unsafe_allow_html=True)
         st.markdown('<div class="section-header">Wygenerowany link UTM</div>', unsafe_allow_html=True)
@@ -522,6 +538,33 @@ if submit:
         """, unsafe_allow_html=True)
         
         st.code(final_url, language=None)
+        
+        st.markdown('<div class="section-header">Parametry UTM (bez URL)</div>', unsafe_allow_html=True)
+        
+        # Kolorowane parametry bez URL
+        if utm_params_only:
+            params_text = ""
+            params_part = utm_params_only[1:]  # Usuwamy "?" z początku
+            params = params_part.split("&")
+            for i, param in enumerate(params):
+                if "=" in param:
+                    param_name, param_value = param.split("=", 1)
+                    params_text += f'<span style="color: #ff9d4f;">{param_name}</span>=<span style="color: #4ade80;">{param_value}</span>'
+                else:
+                    params_text += f'<span style="color: #ff9d4f;">{param}</span>'
+                
+                if i < len(params) - 1:
+                    params_text += '<span style="color: #ffffff;">&amp;</span>'
+            
+            st.markdown(f"""
+            <div style="background-color: #2a3746; padding: 16px; border-radius: 4px; margin-bottom: 10px; font-family: monospace; overflow-wrap: break-word; line-height: 1.5;">
+                <span style="color: #ffffff;">?</span>{params_text}
+            </div>
+            <p style="font-size: 0.8em; color: #9ca3af; margin-top: 5px;">Kliknij ikonę po prawej stronie poniżej, aby skopiować tylko parametry</p>
+            """, unsafe_allow_html=True)
+            
+            st.code(utm_params_only, language=None)
+        
         st.markdown('</div>', unsafe_allow_html=True)
 
 # Informacje
@@ -546,4 +589,37 @@ with st.expander("Informacje o parametrach UTM"):
     - **utm_content** - wersja kreacji
     - **utm_creative_id** - id z adserwera
     - **utm_term** - argument, słowo kluczowe
+    """)
+
+with st.expander("Etapy lejka marketingowego"):
+    st.markdown("""
+    ### Stages - Etapy lejka marketingowego
+    
+    **1. Reach** - Budowanie świadomości marki i dotarcie do jak najszerszego grona nowych odbiorców
+    - KPI: wyświetlenia, zasięg, liczba unikalnych użytkowników
+    - Działania: kampanie display, współpraca z influencerami, video awareness
+    
+    **2. Engage** - Pierwsze zaangażowanie odbiorcy, wzbudzenie ciekawości i zachęcenie do interakcji
+    - KPI: CTR, czas na stronie, reakcje, komentarze, udostępnienia
+    - Działania: interaktywne posty, konkursy, remarketing, newslettery
+    
+    **3. Consider** - Faza rozważenia, użytkownik szuka informacji i porównuje rozwiązania
+    - KPI: pobrania materiałów, formularze kontaktowe, rejestracje na wydarzenia
+    - Działania: case studies, webinary, oferty demo/trial, landing pages z kalkulatorami
+    
+    **4. Convert** - Faza konwersji, przekonanie do zakupu lub pożądanej akcji końcowej
+    - KPI: liczba konwersji, CVR, zamówienia/subskrypcje, CAC
+    - Działania: remarketing na porzucających koszyk, oferty limitowane, kupony rabatowe
+    
+    **5. Retain** - Utrzymanie klienta i budowanie lojalności wśród obecnych klientów
+    - KPI: retention rate, powtarzalność zakupów, aktywność w aplikacji
+    - Działania: programy lojalnościowe, personalizowane rekomendacje, maile post-sale
+    
+    **6. Upsell** - Zwiększenie wartości klienta przez sprzedaż produktów premium lub dodatków
+    - KPI: średnia wartość koszyka, liczba sprzedanych dodatków, upgrade'ów
+    - Działania: cross-selling, dynamiczne rekomendacje, e-maile z ofertami upgrade'ów
+    
+    **7. Advocate** - Budowanie armii ambasadorów, motywowanie do polecania marki
+    - KPI: liczba poleceń, ilość opinii online, zasięg organiczny dzięki UGC
+    - Działania: programy poleceń, zachęty za opinie, konkursy na historie klienta
     """)

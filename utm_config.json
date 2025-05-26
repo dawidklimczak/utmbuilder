@@ -141,21 +141,12 @@
   ],
   
   "stages": [
-    "awareness",
     "reach",
-    "interest", 
-    "engage",
-    "consideration",
+    "engage", 
     "consider",
-    "intent",
-    "purchase",
     "convert",
-    "retention",
     "retain",
-    "loyalty",
     "upsell",
-    "cross_sell",
-    "advocacy",
     "advocate"
   ],
   
