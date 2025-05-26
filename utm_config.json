@@ -169,119 +169,309 @@
   ],
   
   "campaign_templates": {
-    "Google Ads - Search": {
-      "utm_channel": "paid",
-      "utm_source": "google",
-      "utm_medium": "cpc",
-      "utm_goal": "traffic",
-      "description": "Kampania Google Ads - wyszukiwarka płatna"
+    "Maile MailerLite": {
+      "utm_channel": "owned",
+      "utm_source": "elastic",
+      "utm_medium": "email",
+      "description": "Kampanie email z MailerLite"
     },
-    "Google Ads - Display": {
-      "utm_channel": "paid", 
-      "utm_source": "google",
+    "Maile SalesManago": {
+      "utm_channel": "owned", 
+      "utm_source": "salesmanago",
+      "utm_medium": "email",
+      "description": "Kampanie email z SalesManago"
+    },
+    "Mail WP płatny": {
+      "utm_channel": "paid",
+      "utm_source": "wp",
+      "utm_medium": "mail",
+      "description": "Płatna reklama mailowa WP"
+    },
+    "SMS Redlink": {
+      "utm_channel": "owned",
+      "utm_source": "redlink", 
+      "utm_medium": "sms",
+      "description": "Kampanie SMS z Redlink"
+    },
+    "SMS SalesManago": {
+      "utm_channel": "owned",
+      "utm_source": "salesmanago",
+      "utm_medium": "sms", 
+      "description": "Kampanie SMS z SalesManago"
+    },
+    "Maile Woodpecker": {
+      "utm_channel": "owned",
+      "utm_source": "woodpecker",
+      "utm_medium": "email",
+      "description": "Cold email z Woodpecker"
+    },
+    "Banner na stronie": {
+      "utm_channel": "owned",
+      "utm_source": "site",
       "utm_medium": "display",
-      "utm_goal": "brand_awareness",
-      "description": "Kampania Google Ads - sieć reklamowa"
+      "description": "Banner na własnej stronie"
     },
-    "Google Ads - YouTube": {
+    "Pop-up na stronie": {
+      "utm_channel": "owned", 
+      "utm_source": "site",
+      "utm_medium": "display",
+      "description": "Pop-up na własnej stronie"
+    },
+    "Banner influencera": {
+      "utm_channel": "affiliate",
+      "utm_source": "influencer",
+      "utm_medium": "display",
+      "description": "Banner u influencera/partnera"
+    },
+    "Banner zewnętrzny płatny": {
       "utm_channel": "paid",
-      "utm_source": "youtube", 
-      "utm_medium": "video",
-      "utm_goal": "engagement",
-      "description": "Reklamy wideo na YouTube"
+      "utm_source": "external_site", 
+      "utm_medium": "display",
+      "description": "Płatny banner na zewnętrznej stronie"
     },
-    "Facebook Ads - Traffic": {
+    "Banner zewnętrzny barter": {
+      "utm_channel": "paid",
+      "utm_source": "external_site",
+      "utm_medium": "display", 
+      "description": "Banner zewnętrzny - wymiana/barter"
+    },
+    "POK Meta": {
+      "utm_channel": "paid",
+      "utm_source": "meta",
+      "utm_medium": "paid_social",
+      "description": "Reklama POK na Facebook + Instagram"
+    },
+    "Lead Meta": {
+      "utm_channel": "paid", 
+      "utm_source": "meta",
+      "utm_medium": "paid_social",
+      "utm_goal": "lead",
+      "description": "Generowanie leadów Meta (FB+IG)"
+    },
+    "Lead Facebook": {
+      "utm_channel": "paid",
+      "utm_source": "facebook", 
+      "utm_medium": "paid_social",
+      "utm_goal": "lead",
+      "description": "Generowanie leadów Facebook"
+    },
+    "Lead LinkedIn": {
+      "utm_channel": "paid",
+      "utm_source": "linkedin",
+      "utm_medium": "paid_social",
+      "utm_goal": "lead", 
+      "description": "Generowanie leadów LinkedIn"
+    },
+    "Lead eWebinar": {
+      "utm_channel": "paid",
+      "utm_source": "ewebinar",
+      "utm_medium": "paid_social",
+      "utm_goal": "sales",
+      "description": "Lead z eWebinar"
+    },
+    "Sprzedaż Meta": {
+      "utm_channel": "paid",
+      "utm_source": "meta", 
+      "utm_medium": "paid_social",
+      "utm_goal": "sales",
+      "description": "Reklama sprzedażowa Meta (FB+IG)"
+    },
+    "Sprzedaż Facebook": {
       "utm_channel": "paid",
       "utm_source": "facebook",
-      "utm_medium": "cpc", 
-      "utm_goal": "traffic",
-      "description": "Facebook Ads - ruch na stronę"
+      "utm_medium": "paid_social",
+      "utm_goal": "sales", 
+      "description": "Reklama sprzedażowa Facebook"
     },
-    "Facebook Ads - Conversions": {
-      "utm_channel": "paid",
-      "utm_source": "facebook",
-      "utm_medium": "cpc",
-      "utm_goal": "conversions", 
-      "description": "Facebook Ads - konwersje"
-    },
-    "Instagram Ads": {
+    "Sprzedaż Instagram": {
       "utm_channel": "paid",
       "utm_source": "instagram",
-      "utm_medium": "cpc",
-      "utm_goal": "engagement",
-      "description": "Reklamy na Instagram"
+      "utm_medium": "paid_social",
+      "utm_goal": "sales",
+      "description": "Reklama sprzedażowa Instagram"
     },
-    "LinkedIn Ads": {
+    "Sprzedaż LinkedIn": {
       "utm_channel": "paid",
-      "utm_source": "linkedin", 
+      "utm_source": "linkedin",
+      "utm_medium": "paid_social", 
+      "utm_goal": "sales",
+      "description": "Reklama sprzedażowa LinkedIn"
+    },
+    "Sprzedaż Google Ads": {
+      "utm_channel": "paid",
+      "utm_source": "google",
       "utm_medium": "cpc",
-      "utm_goal": "leads",
-      "description": "LinkedIn Ads - marketing B2B"
+      "utm_goal": "sales",
+      "description": "Reklama sprzedażowa Google Ads"
     },
-    "Email Newsletter": {
+    "Upsell eWebinar": {
       "utm_channel": "owned",
-      "utm_source": "newsletter",
-      "utm_medium": "email",
-      "utm_goal": "engagement",
-      "description": "Newsletter email - własny kanał"
+      "utm_source": "ewebinar", 
+      "utm_medium": "typage",
+      "utm_stage": "upsell",
+      "utm_goal": "sales",
+      "description": "Sprzedaż upsell z eWebinar"
     },
-    "Email Campaign": {
-      "utm_channel": "owned",
-      "utm_source": "email",
-      "utm_medium": "email", 
-      "utm_goal": "conversions",
-      "description": "Kampania email marketingowa"
+    "Ruch Meta": {
+      "utm_channel": "paid",
+      "utm_source": "meta",
+      "utm_medium": "paid_social",
+      "utm_goal": "traffic", 
+      "description": "Reklama na ruch Meta (FB+IG)"
     },
-    "Retargeting Facebook": {
+    "Ruch Facebook": {
       "utm_channel": "paid",
       "utm_source": "facebook",
-      "utm_medium": "retargeting",
-      "utm_goal": "conversions",
-      "description": "Remarketing Facebook"
+      "utm_medium": "paid_social",
+      "utm_goal": "traffic",
+      "description": "Reklama na ruch Facebook"
     },
-    "Retargeting Google": {
-      "utm_channel": "paid", 
-      "utm_source": "google",
-      "utm_medium": "display",
-      "utm_goal": "conversions",
-      "description": "Remarketing Google Display"
+    "Ruch Instagram": {
+      "utm_channel": "paid",
+      "utm_source": "instagram", 
+      "utm_medium": "paid_social",
+      "utm_goal": "traffic",
+      "description": "Reklama na ruch Instagram"
     },
-    "Press Release": {
-      "utm_channel": "earned",
-      "utm_source": "press",
-      "utm_medium": "organic",
-      "utm_goal": "brand_awareness", 
-      "description": "Komunikat prasowy"
+    "Ruch LinkedIn": {
+      "utm_channel": "paid",
+      "utm_source": "linkedin",
+      "utm_medium": "paid_social",
+      "utm_goal": "traffic",
+      "description": "Reklama na ruch LinkedIn"
     },
-    "Influencer Campaign": {
-      "utm_channel": "earned",
-      "utm_source": "influencer",
+    "Ruch Google Ads": {
+      "utm_channel": "paid",
+      "utm_source": "google", 
+      "utm_medium": "cpc",
+      "utm_goal": "traffic",
+      "description": "Reklama na ruch Google Ads"
+    },
+    "Zasięg Meta": {
+      "utm_channel": "paid",
+      "utm_source": "meta",
+      "utm_medium": "paid_social",
+      "utm_goal": "traffic",
+      "description": "Reklama na zasięg Meta (FB+IG)"
+    },
+    "Zasięg Facebook": {
+      "utm_channel": "paid",
+      "utm_source": "facebook",
+      "utm_medium": "paid_social", 
+      "utm_goal": "traffic",
+      "description": "Reklama na zasięg Facebook"
+    },
+    "Zasięg Instagram": {
+      "utm_channel": "paid",
+      "utm_source": "instagram",
+      "utm_medium": "paid_social",
+      "utm_goal": "traffic",
+      "description": "Reklama na zasięg Instagram"
+    },
+    "Link w artykule własnym": {
+      "utm_channel": "owned",
+      "utm_source": "blog", 
+      "utm_medium": "article",
+      "description": "Link w artykule na własnym blogu"
+    },
+    "Link w artykule zewnętrznym": {
+      "utm_channel": "paid",
+      "utm_source": "external_blog",
+      "utm_medium": "article",
+      "description": "Link w artykule na zewnętrznym blogu"
+    },
+    "Post organiczny Facebook": {
+      "utm_channel": "owned",
+      "utm_source": "facebook", 
       "utm_medium": "social",
-      "utm_goal": "brand_awareness",
-      "description": "Kampania influencer marketing"
+      "description": "Organiczny post na Facebooku"
     },
-    "Affiliate Program": {
+    "Post organiczny Instagram": {
+      "utm_channel": "owned",
+      "utm_source": "instagram",
+      "utm_medium": "social",
+      "description": "Organiczny post na Instagramie"
+    },
+    "Post organiczny LinkedIn": {
+      "utm_channel": "owned",
+      "utm_source": "linkedin",
+      "utm_medium": "social", 
+      "description": "Organiczny post na LinkedIn"
+    },
+    "Stories Facebook płatne": {
+      "utm_channel": "paid",
+      "utm_source": "facebook",
+      "utm_medium": "paid_social",
+      "description": "Płatne Stories na Facebooku"
+    },
+    "Stories Instagram płatne": {
+      "utm_channel": "paid",
+      "utm_source": "instagram",
+      "utm_medium": "paid_social",
+      "description": "Płatne Stories na Instagramie"
+    },
+    "Reels Facebook płatne": {
+      "utm_channel": "paid", 
+      "utm_source": "facebook",
+      "utm_medium": "paid_social",
+      "description": "Płatne Reels na Facebooku"
+    },
+    "Reels Instagram płatne": {
+      "utm_channel": "paid",
+      "utm_source": "instagram",
+      "utm_medium": "paid_social",
+      "description": "Płatne Reels na Instagramie"
+    },
+    "Post influencera": {
       "utm_channel": "affiliate",
-      "utm_source": "partner", 
-      "utm_medium": "affiliate",
-      "utm_goal": "sales",
-      "description": "Program partnerski"
+      "utm_source": "influencer", 
+      "utm_medium": "paid_social",
+      "description": "Post u influencera/partnera"
     },
-    "Event QR Code": {
-      "utm_channel": "offline",
-      "utm_source": "event",
-      "utm_medium": "qr",
-      "utm_goal": "leads",
-      "description": "Kod QR na wydarzeniu"
+    "Stories influencera": {
+      "utm_channel": "affiliate",
+      "utm_source": "influencer",
+      "utm_medium": "paid_social",
+      "description": "Stories u influencera/partnera"
     },
-    "Print Ad": {
+    "Reels influencera": {
+      "utm_channel": "affiliate",
+      "utm_source": "influencer",
+      "utm_medium": "paid_social", 
+      "description": "Reels u influencera/partnera"
+    },
+    "Direct Mail": {
       "utm_channel": "offline",
       "utm_source": "print",
-      "utm_medium": "qr", 
-      "utm_goal": "traffic",
-      "description": "Reklama w prasie z kodem QR"
+      "utm_medium": "dm",
+      "description": "Direct mail - wysyłka pocztowa"
+    },
+    "Ulotka": {
+      "utm_channel": "offline",
+      "utm_source": "print", 
+      "utm_medium": "flyer",
+      "description": "Ulotka reklamowa"
+    },
+    "Roll-up": {
+      "utm_channel": "offline",
+      "utm_source": "print",
+      "utm_medium": "rollup",
+      "description": "Roll-up reklamowy"
+    },
+    "Reklama w czasopiśmie własnym": {
+      "utm_channel": "owned",
+      "utm_source": "print", 
+      "utm_medium": "magazine",
+      "description": "Reklama w własnym czasopiśmie"
+    },
+    "Reklama w czasopiśmie zewnętrznym": {
+      "utm_channel": "paid",
+      "utm_source": "print",
+      "utm_medium": "magazine",
+      "description": "Reklama w zewnętrznym czasopiśmie"
     }
   },
+
   
   "validation_rules": {
     "warnings": [
