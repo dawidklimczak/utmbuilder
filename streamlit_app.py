@@ -382,43 +382,63 @@ with st.form("utm_form"):
         
         source_suggestions = get_sources_for_channel(utm_channel, config)
         
-        utm_source_select = st.selectbox(
-            "",
-            options=[""] + source_suggestions + ["Inne..."],
-            key="utm_source_select",
-            label_visibility="collapsed"
-        )
+        # Combo: selectbox + text_input w dwóch kolumnach
+        col_source_1, col_source_2 = st.columns([3, 2])
         
-        # Pole dla własnej wartości source
-        if utm_source_select == "Inne...":
-            utm_source = st.text_input(
-                "Wpisz własną wartość utm_source:",
-                key="utm_source_custom",
-                placeholder="np. moja_platforma"
+        with col_source_1:
+            utm_source_select = st.selectbox(
+                "",
+                options=[""] + source_suggestions + ["Inne..."],
+                key="utm_source_select",
+                label_visibility="collapsed"
             )
-        else:
+        
+        with col_source_2:
+            utm_source_custom = st.text_input(
+                "",
+                key="utm_source_custom",
+                placeholder="lub wpisz własną wartość",
+                label_visibility="collapsed"
+            )
+        
+        # Logika wyboru - własna wartość ma priorytet
+        if utm_source_custom.strip():
+            utm_source = utm_source_custom.strip()
+        elif utm_source_select and utm_source_select != "Inne...":
             utm_source = utm_source_select
+        else:
+            utm_source = ""
         
         st.markdown('**utm_medium (taktyka/typ ruchu)** *', unsafe_allow_html=True)
         
         medium_suggestions = get_mediums_for_channel(utm_channel, config)
         
-        utm_medium_select = st.selectbox(
-            "",
-            options=[""] + medium_suggestions + ["Inne..."],
-            key="utm_medium_select",
-            label_visibility="collapsed"
-        )
+        # Combo: selectbox + text_input w dwóch kolumnach
+        col_medium_1, col_medium_2 = st.columns([3, 2])
         
-        # Pole dla własnej wartości medium
-        if utm_medium_select == "Inne...":
-            utm_medium = st.text_input(
-                "Wpisz własną wartość utm_medium:",
-                key="utm_medium_custom",
-                placeholder="np. moj_typ_ruchu"
+        with col_medium_1:
+            utm_medium_select = st.selectbox(
+                "",
+                options=[""] + medium_suggestions + ["Inne..."],
+                key="utm_medium_select",
+                label_visibility="collapsed"
             )
-        else:
+        
+        with col_medium_2:
+            utm_medium_custom = st.text_input(
+                "",
+                key="utm_medium_custom",
+                placeholder="lub wpisz własną wartość",
+                label_visibility="collapsed"
+            )
+        
+        # Logika wyboru - własna wartość ma priorytet
+        if utm_medium_custom.strip():
+            utm_medium = utm_medium_custom.strip()
+        elif utm_medium_select and utm_medium_select != "Inne...":
             utm_medium = utm_medium_select
+        else:
+            utm_medium = ""
         
         st.markdown('**utm_id (numer akcji)** *', unsafe_allow_html=True)
         utm_id = st.text_input(
