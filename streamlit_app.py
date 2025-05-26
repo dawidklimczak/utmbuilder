@@ -320,8 +320,7 @@ with st.form("utm_form"):
             options=[""] + config.get("channels", []),
             help="Wybierz najwyższy poziom źródła ruchu",
             key="utm_channel",
-            label_visibility="collapsed",
-            on_change=clear_source_medium
+            label_visibility="collapsed"
         )
     
     with col2:
@@ -331,7 +330,7 @@ with st.form("utm_form"):
         
         # Informacja o braku sugestii
         if utm_channel and not source_suggestions:
-            st.info(f"Brak predefiniowanych źródeł dla kanału '{utm_channel}'. Użyj pola tekstowego.")
+            st.info(f"Brak predefiniowanych źródeł dla kanału '{utm_channel}'. Użyj pola tekstowego lub kliknij 'Generuj link UTM' żeby odświeżyć sugestie.")
         
         # Combo: selectbox + text_input w dwóch kolumnach
         col_source_1, col_source_2 = st.columns([3, 2])
@@ -366,7 +365,7 @@ with st.form("utm_form"):
         
         # Informacja o braku sugestii
         if utm_channel and not medium_suggestions:
-            st.info(f"Brak predefiniowanych mediów dla kanału '{utm_channel}'. Użyj pola tekstowego.")
+            st.info(f"Brak predefiniowanych mediów dla kanału '{utm_channel}'. Użyj pola tekstowego lub kliknij 'Generuj link UTM' żeby odświeżyć sugestie.")
         
         # Combo: selectbox + text_input w dwóch kolumnach
         col_medium_1, col_medium_2 = st.columns([3, 2])
