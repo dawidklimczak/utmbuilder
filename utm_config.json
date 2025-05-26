@@ -169,7 +169,7 @@
   ],
   
   "campaign_templates": {
-    "Maile MailerLite": {
+    "Maile MailingManager": {
       "utm_channel": "owned",
       "utm_source": "elastic",
       "utm_medium": "email",
