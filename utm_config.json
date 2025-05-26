@@ -126,8 +126,7 @@
     "medica",
     "education", 
     "lifestyle",
-    "business",
-    "technology"
+    "business"
   ],
   
   "stages": [
@@ -142,20 +141,9 @@
   
   "goals": [
     "sales",
-    "revenue",
     "traffic",
     "leads",
-    "conversions",
-    "engagement",
-    "brand_awareness",
-    "retention",
-    "acquisition",
-    "downloads",
-    "subscriptions",
-    "registrations",
-    "webinar",
-    "demo",
-    "trial"
+    "engagement"
   ],
   
   "campaign_templates": {

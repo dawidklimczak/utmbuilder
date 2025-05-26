@@ -171,13 +171,10 @@ def validate_combination(channel, source, medium, config):
     messages = []
     validation_rules = config.get("validation_rules", {})
     
+    # Tylko ostrzeżenia - pomijamy sukcesy
     for rule in validation_rules.get("warnings", []):
         if (rule.get("channel") == channel and rule.get("medium") == medium):
             messages.append(("warning", rule["message"]))
-    
-    for rule in validation_rules.get("success", []):
-        if (rule.get("channel") == channel and rule.get("medium") == medium):
-            messages.append(("success", rule["message"]))
     
     return messages
 
@@ -423,14 +420,12 @@ with st.form("utm_form"):
         else:
             utm_medium = ""
     
-    # Walidacja
+    # Walidacja - tylko ostrzeżenia
     if ui_settings.get("show_validation", True) and utm_channel and utm_source and utm_medium:
         validation_messages = validate_combination(utm_channel, utm_source, utm_medium, config)
         for msg_type, message in validation_messages:
             if msg_type == "warning":
                 st.markdown(f'<div class="validation-warning">⚠️ {message}</div>', unsafe_allow_html=True)
-            elif msg_type == "success":
-                st.markdown(f'<div class="validation-success">✅ {message}</div>', unsafe_allow_html=True)
     
     # KAMPANIA (opcjonalne)
     st.markdown('<div class="section-header">Kampania (opcjonalne)</div>', unsafe_allow_html=True)
